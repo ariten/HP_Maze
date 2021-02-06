@@ -9,7 +9,7 @@ class Cell:
     A cell in the maze
     """
 
-    wall_pairs = {'N': 'S', 'S':'N', 'E':'W', 'W':'E'}
+    wall_pairs = {'N': 'S', 'S': 'N', 'E': 'W', 'W': 'E'}
 
     def __init__(self, x, y):
         """
@@ -33,7 +33,7 @@ class Cell:
 
     def knock_down_wall(self, other, wall):
         self.walls[wall] = False
-        other.walls[Cell.wall_pairs] = False
+        other.walls[Cell.wall_pairs[wall]] = False
 
 class Maze:
     """
@@ -168,8 +168,8 @@ class Maze:
 
         n = self.nx * self.ny
         cell_stack = []
-        current_cell = self.cell_at(seld.ix, self.iy)
-        nv =1
+        current_cell = self.cell_at(self.ix, self.iy)
+        nv = 1
 
         while nv < n:
             neighbours = self.find_valid_neighbours(current_cell)
