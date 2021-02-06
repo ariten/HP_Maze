@@ -25,8 +25,14 @@ class Cell:
         self.state = 0
         self.walls = {'N': True, 'E': True, 'S': True, 'W': True}
 
+    def has_wall(self, direction):
+        return self.walls[direction]
+
     def change_state(self, state):
         self.state = state
+
+    def get_coordinates(self):
+        return self.x, self.y
 
     def has_all_walls(self):
         return all(self.walls.values())
