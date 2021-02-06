@@ -33,6 +33,7 @@ class Cell:
         cell_states_dict = {0: 'path', 1: 'question', 2: 'end', 3: 'start'}
         return "CELL ("+str(self.x)+","+str(self.y)+")  |  TYPE: "+cell_states_dict[self.state]+"  |  WALLS: "+json.dumps(self.walls)
 
+
     def has_wall(self, direction):
         return self.walls[direction]
 

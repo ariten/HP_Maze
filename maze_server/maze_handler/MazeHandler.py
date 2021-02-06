@@ -13,7 +13,7 @@ class MazeHandler:
         nx, ny = 10,10  # Maze dimensions (ncols, nrows)
         ix, iy = 0, 0  # Maze entry position
         self.maze = Maze(nx, ny, ix, iy)
-        # self.maze_runner = MazeRunner(self.get_maze())
+        self.maze_runner = MazeRunner(self.get_maze())
         # # pickle.dump(self.maze, open("testMaze.pickle", "wb"))
         # pickle.dump(self.maze, open("testMaze.pickle", "wb"))
         self.maze = pickle.load(open("testMaze.pickle", "rb"))
@@ -22,10 +22,10 @@ class MazeHandler:
 
     def process_input(self, team, input):
         if input.upper() in ['N', 'S', 'E', 'W']:  # direction
-            return self.move_player(input, team):
-        elif input == SECRET_SPELL:
+            return self.move_player(input, team)
+        elif input == SECRET_SPELL:  # spell
             return self.try_escape(team, input)
-        elif self.get_location(team).state == 1:  # question node
+        elif self.get_location(team).state == 1:  # answer
             return self.validate_answer(team, answer)
         else:
             return "Invalid input"
@@ -56,6 +56,7 @@ class MazeHandler:
 
     def move_player(self, direction, team):
         location = self.get_location(team)
+        print(location)
         response = self.maze_runner.run_direction(location, direction)
         code = response[0]
         print(code)
@@ -83,7 +84,7 @@ class MazeHandler:
 
 
     def end_node(self):
-        print("END NODE")
+        return "You have found the end of the maze! Would you like to leave, or keep exploring?"
 
 
     def question(self, team, location):
@@ -105,16 +106,17 @@ class MazeHandler:
             return "Wrong answer"
 
 
-    def junction(self, possible_moves):
-        print("Junction")
-        print(possible_moves)
+    def junction(self):
+        return "You have reached a junction. Which way do you want to go?"
 
 
     def deadend(self, team):
-        print("Deadend")
+        return "You have reached a dead end."
+
 
 
 mh = MazeHandler()
-
-print(mh.validate_answer('team1', 'Hu"?MAn'))
-# mh.question()
+print(mh.maze)
+mh.register_team('team1')
+print(mh.team_locations)
+print(mh.move_player('E', 'team1'))
