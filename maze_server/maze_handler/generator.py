@@ -1,3 +1,4 @@
+import json
 import random
 """
 credit too Christian, github username:xnx, link to code https://github.com/scipython/scipython-maths/tree/master/maze
@@ -25,6 +26,11 @@ class Cell:
         self.state = 0
         self.walls = {'N': True, 'E': True, 'S': True, 'W': True}
 
+    def __str__(self):
+        cell_states_dict = {0: 'path', 1: 'question', 2: 'end', 3: 'start'}
+
+        return "CELL ("+str(self.x)+","+str(self.y)+")  |  TYPE: "+cell_states_dict[self.state]+"  |  WALLS: "+json.dumps(self.walls)
+
     def change_state(self, state):
         self.state = state
 
@@ -33,7 +39,8 @@ class Cell:
 
     def knock_down_wall(self, other, wall):
         self.walls[wall] = False
-        other.walls[Cell.wall_pairs] = False
+        other.walls[Cell.wall_pairs[wall]] = False
+
 
 class Maze:
     """
@@ -74,11 +81,11 @@ class Maze:
                 elif self.maze_map[x][y].walls['E']:
                     maze_row.append(' |')
                 elif self.maze_map[x][y].state == 1:
-                    maze_row.append(' Q')
+                    maze_row.append('Q ')
                 elif self.maze_map[x][y].state == 2:
-                    maze_row.append(' C')
+                    maze_row.append('C ')
                 elif self.maze_map[x][y].state == 3:
-                    maze_row.append(' S')
+                    maze_row.append('S ')
                 else:
                     maze_row.append('  ')
             maze_rows.append(''.join(maze_row))
@@ -168,7 +175,7 @@ class Maze:
 
         n = self.nx * self.ny
         cell_stack = []
-        current_cell = self.cell_at(seld.ix, self.iy)
+        current_cell = self.cell_at(self.ix, self.iy)
         nv =1
 
         while nv < n:
