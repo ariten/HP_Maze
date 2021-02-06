@@ -133,7 +133,7 @@ class Maze:
         # Pad the maze all ar+ound by this amount.
         padding = 10
         # Height and width of the maze image (excluding padding), in pixels
-        height = 500
+        height = 1000
         width = int(height * aspect_ratio)
         # Scaling factors mapping maze coordinates to image coordinates
         scy, scx = height / self.ny, width / self.nx

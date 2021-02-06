@@ -5,3 +5,4 @@ class Team(models.Model):
         return self.team_name
 
     team_name = models.CharField(max_length=100)
+    score = models.IntegerField()
