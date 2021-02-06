@@ -1,4 +1,8 @@
 import random
+"""
+credit too Christian, github username:xnx, link to code https://github.com/scipython/scipython-maths/tree/master/maze
+"""
+
 
 class Cell:
     """
@@ -43,6 +47,11 @@ class Maze:
 
         ix & iy  are the start point in the maze
         """
+        self.nx = nx
+        self.ny = ny
+        self.ix = ix
+        self.iy = iy
+        self.maze_map = [[Cell(x, y) for y in range(ny)] for x in range(nx)]
 
     def cell_at(self, x, y):
         return self.maze_map[x][y]
@@ -133,4 +142,48 @@ class Maze:
             print('<line x1="0" y1="0" x2="{}" y2="0"/>'.format(width), file=f)
             print('<line x1="0" y1="0" x2="0" y2="{}"/>'.format(height), file=f)
             print('</svg>', file=f)
-        
+
+    def find_valid_neighbours(self, cell):
+        """
+        return a list of unvisted neighbouring cells
+        :param cell: instance of cell
+        """
+        delta = [('W', (-1, 0)),
+                 ('E', (1, 0)),
+                 ('S', (0, 1)),
+                 ('N', (0, -1))]
+        neighbours = []
+        for direction, (dx, dy) in delta:
+            x2, y2 = cell.x + dx, cell.y + dy
+            if (0 <= x2 < self.nx) and (0 <= y2 < self.ny):
+                neighbour = self.cell_at(x2, y2)
+                if neighbour.has_all_walls():
+                    neighbours.append((direction, neighbour))
+        return neighbours
+
+    def make_maze(self):
+        """
+        algorithm that creates the maze and adds the path using unvisited nodes to create the maze
+        """
+
+        n = self.nx * self.ny
+        cell_stack = []
+        current_cell = self.cell_at(seld.ix, self.iy)
+        nv =1
+
+        while nv < n:
+            neighbours = self.find_valid_neighbours(current_cell)
+
+            if not neighbours:
+                current_cell = cell_stack.pop()
+                continue
+
+            direction, next_cell = random.choice(neighbours)
+            current_cell.knock_down_wall(next_cell, direction)
+            cell_stack.append(current_cell)
+            current_cell = next_cell
+            nv += 1
+        self.cell_at(random.randint(self.nx%10, self.nx-1), random.randint(self.ny%10, self.ny-1)).change_state(2)
+        for x in range(5):
+            self.cell_at(random.randint(1, self.nx - 1), random.randint(1, self.ny - 1)).change_state(1)
+        self.cell_at(self.ix, self.iy).change_state(3)
