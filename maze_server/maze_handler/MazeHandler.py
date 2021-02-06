@@ -1,9 +1,8 @@
 import pickle
 import re
 
-# from MazeGenerator import Maze
-from MazeGenerator import Maze
-# from maze_server.maze_handler.MazeRunner import MazeRunner
+from maze_server.maze_handler.MazeGenerator import Maze
+from maze_server.maze_handler.MazeRunner import MazeRunner
 
 
 class MazeHandler:
@@ -17,12 +16,18 @@ class MazeHandler:
         self.maze = pickle.load(open("testMaze.pickle", "rb"))
         self.team_locations = {}  # assume no duplicates
 
-    # def create_maze(self):
-    #     self.maze.make_maze()
+    def create_maze(self):
+        self.maze.make_maze()
+
+
+    def process_input(self):
+        pass
 
 
     def get_challenge(self, node):
         pass
+    # def create_team(self, team):
+    #     self.team_locations.update({team: (0, 0)})
 
 
     def get_location(self, team):
@@ -41,12 +46,13 @@ class MazeHandler:
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
 
+
     # def move_player(self, direction, team):
     #     location = self.get_location(team)
     #     response = self.maze_runner.run_direction(location, direction)
     #     code = response[0]
     #     print(code)
-    #     self.set_location(response[1].get_coordinates, team)
+    #     self.set_location(response[1].get_coordinates(), team)
     #     movements = response[2]
     #     print(movements)
     #     print(response[1].get_coordinates())
@@ -66,7 +72,7 @@ class MazeHandler:
         self.team_locations.update({team: location})
 
 
-    def end_node(self, team):
+    def end_node(self):
         print("END NODE")
 
 
@@ -88,13 +94,14 @@ class MazeHandler:
             return "Wrong answer."
 
 
-    def junction(self, team, possible_moves):
+    def junction(self, possible_moves):
         print("Junction")
         print(possible_moves)
 
 
     def deadend(self, team):
         print("Deadend")
+
 
 mh = MazeHandler()
 
