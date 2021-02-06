@@ -10,7 +10,7 @@ class Cell:
     A cell in the maze
     """
 
-    wall_pairs = {'N': 'S', 'S':'N', 'E':'W', 'W':'E'}
+    wall_pairs = {'N': 'S', 'S': 'N', 'E': 'W', 'W': 'E'}
 
     def __init__(self, x, y):
         """
@@ -31,8 +31,14 @@ class Cell:
 
         return "CELL ("+str(self.x)+","+str(self.y)+")  |  TYPE: "+cell_states_dict[self.state]+"  |  WALLS: "+json.dumps(self.walls)
 
+    def has_wall(self, direction):
+        return self.walls[direction]
+
     def change_state(self, state):
         self.state = state
+
+    def get_coordinates(self):
+        return self.x, self.y
 
     def has_all_walls(self):
         return all(self.walls.values())
@@ -40,7 +46,6 @@ class Cell:
     def knock_down_wall(self, other, wall):
         self.walls[wall] = False
         other.walls[Cell.wall_pairs[wall]] = False
-
 
 class Maze:
     """
@@ -176,7 +181,7 @@ class Maze:
         n = self.nx * self.ny
         cell_stack = []
         current_cell = self.cell_at(self.ix, self.iy)
-        nv =1
+        nv = 1
 
         while nv < n:
             neighbours = self.find_valid_neighbours(current_cell)
