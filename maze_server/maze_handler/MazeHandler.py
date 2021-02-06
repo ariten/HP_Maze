@@ -4,12 +4,13 @@ from maze_server.maze_handler.MazeRunner import MazeRunner
 
 class MazeHandler:
     def __init__(self):
-        self.maze = Maze(100, 100)
+        self.maze = Maze(10, 10, 0, 0)
         self.maze_runner = MazeRunner(self.get_maze())
         self.team_location = {}
 
     def create_maze(self):
         self.maze.make_maze()
+        print(self.maze)
 
     def create_team(self, team):
         self.team_location.update({team: (0, 0)})
@@ -21,11 +22,8 @@ class MazeHandler:
         location = self.get_location(team)
         response = self.maze_runner.run_direction(location, direction)
         code = response[0]
-        print(code)
-        self.set_location(response[1].get_coordinates, team)
+        self.set_location(response[1].get_coordinates(), team)
         movements = response[2]
-        print(movements)
-        print(response[1].get_coordinates())
         if code == 4:
             self.end_node()
         if code == 3:
@@ -39,7 +37,6 @@ class MazeHandler:
 
     def set_location(self, location, team):
         self.team_location.update({team: location})
-        print(self.team_location)
 
     def get_maze(self):
         return self.maze

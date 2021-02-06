@@ -80,11 +80,11 @@ class Maze:
                 elif self.maze_map[x][y].walls['E']:
                     maze_row.append(' |')
                 elif self.maze_map[x][y].state == 1:
-                    maze_row.append(' Q')
+                    maze_row.append('Q ')
                 elif self.maze_map[x][y].state == 2:
-                    maze_row.append(' C')
+                    maze_row.append('C ')
                 elif self.maze_map[x][y].state == 3:
-                    maze_row.append(' S')
+                    maze_row.append('S ')
                 else:
                     maze_row.append('  ')
             maze_rows.append(''.join(maze_row))
