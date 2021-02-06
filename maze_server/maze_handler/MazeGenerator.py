@@ -1,4 +1,8 @@
+import json
 import random
+import re
+
+
 """
 credit too Christian, github username:xnx, link to code https://github.com/scipython/scipython-maths/tree/master/maze
 """
@@ -8,7 +12,6 @@ class Cell:
     """
     A cell in the maze
     """
-
     wall_pairs = {'N': 'S', 'S': 'N', 'E': 'W', 'W': 'E'}
 
     def __init__(self, x, y):
@@ -25,8 +28,15 @@ class Cell:
         self.state = 0
         self.walls = {'N': True, 'E': True, 'S': True, 'W': True}
 
+    def __str__(self):
+        cell_states_dict = {0: 'path', 1: 'question', 2: 'end', 3: 'start'}
+        return "CELL ("+str(self.x)+","+str(self.y)+")  |  TYPE: "+cell_states_dict[self.state]+"  |  WALLS: "+json.dumps(self.walls)
+
     def has_wall(self, direction):
         return self.walls[direction]
+
+    def get_wall_count(self):
+        return sum(self.walls.values())
 
     def change_state(self, state):
         self.state = state
@@ -41,11 +51,12 @@ class Cell:
         self.walls[wall] = False
         other.walls[Cell.wall_pairs[wall]] = False
 
+
+
 class Maze:
     """
     The overarching Maze
     """
-
     def __init__(self, nx, ny, ix=0, iy=0):
         """
         initialise the maze grid. The maze consists of nx x ny cells,
@@ -57,16 +68,21 @@ class Maze:
         self.ny = ny
         self.ix = ix
         self.iy = iy
+
+        self.qa_lookup = dict()  # e.g. {qnode_id: {'coord': 5, 29, 'question': question, 'answer': answer}}
+
         self.maze_map = [[Cell(x, y) for y in range(ny)] for x in range(nx)]
 
     def cell_at(self, x, y):
         return self.maze_map[x][y]
 
+    def get_start_coords(self):
+        return (self.ix, self.iy)
+
     def __str__(self):
         """
         return a crude string version of the maze
         """
-
         maze_rows = ['-' * self.nx * 2]
         for y in range(self.ny):
             maze_row = ['|']
@@ -151,7 +167,7 @@ class Maze:
 
     def find_valid_neighbours(self, cell):
         """
-        return a list of unvisted neighbouring cells
+        return a list of unvisited neighbouring cells
         :param cell: instance of cell
         """
         delta = [('W', (-1, 0)),
@@ -171,7 +187,6 @@ class Maze:
         """
         algorithm that creates the maze and adds the path using unvisited nodes to create the maze
         """
-
         n = self.nx * self.ny
         cell_stack = []
         current_cell = self.cell_at(self.ix, self.iy)
@@ -190,6 +205,32 @@ class Maze:
             current_cell = next_cell
             nv += 1
         self.cell_at(random.randint(self.nx%10, self.nx-1), random.randint(self.ny%10, self.ny-1)).change_state(2)
-        for x in range(5):
+
+        nr_qas = 5
+        question_and_answers = self.get_question_selection(nr_qas)
+
+        for x in range(nr_qas):
+            self.qa_lookup[x] = question_and_answers[x]
             self.cell_at(random.randint(1, self.nx - 1), random.randint(1, self.ny - 1)).change_state(1)
+
         self.cell_at(self.ix, self.iy).change_state(3)
+
+
+    def get_question_selection(self, n=5, qa_filename="questions_and_answers.csv"):
+        """n: number of question nodes"""
+        with open(qa_filename, 'r') as f:
+            nr_qas = len(f.readlines())
+            f.seek(0)
+
+            sample_ids = random.sample(range(nr_qas), n)
+
+            qas = list()
+            for i, qa in enumerate(f):
+                if i in sample_ids:
+                    qas.append(qa)
+
+        qas_formatted = [{'Q': qa.split('","')[0].replace('"', ''), \
+                          'A': [re.sub('[\W_]', '', a.lower()) for a in qa.split('","')[1].split(",")]} \
+                          for qa in qas]
+
+        return qas_formatted
