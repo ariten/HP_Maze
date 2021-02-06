@@ -1,6 +1,6 @@
 import pickle
 
-from generator import Maze
+from MazeGenerator import Maze
 
 
 class MazeHandler:
@@ -9,8 +9,9 @@ class MazeHandler:
         ix, iy = 0, 0  # Maze entry position
         self.maze = Maze(nx, ny, ix, iy)
         self.maze.make_maze()
-
-        self.team_locations = {'team1': (ix, iy), 'team2': (ix, iy)}  # populate team names from django
+        # # pickle.dump(self.maze, open("testMaze.pickle", "wb"))
+        # self.maze = pickle.load(open("testMaze.pickle", "rb"))
+        self.team_locations = {}  # assume no duplicates
 
     def get_challenge(self, node):
         pass
@@ -24,5 +25,5 @@ class MazeHandler:
     def get_timeout(self, team, node):
         pass
 
-    def move_player(self, team, direction):
-        pass
+    def register_team(self, team):
+        self.team_locations[team] = self.maze.get_start_coords()

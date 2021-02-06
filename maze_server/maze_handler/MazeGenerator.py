@@ -9,7 +9,6 @@ class Cell:
     """
     A cell in the maze
     """
-
     wall_pairs = {'N': 'S', 'S': 'N', 'E': 'W', 'W': 'E'}
 
     def __init__(self, x, y):
@@ -28,11 +27,13 @@ class Cell:
 
     def __str__(self):
         cell_states_dict = {0: 'path', 1: 'question', 2: 'end', 3: 'start'}
-
         return "CELL ("+str(self.x)+","+str(self.y)+")  |  TYPE: "+cell_states_dict[self.state]+"  |  WALLS: "+json.dumps(self.walls)
 
     def has_wall(self, direction):
         return self.walls[direction]
+
+    def get_wall_count(self):
+        return sum(self.walls.values())
 
     def change_state(self, state):
         self.state = state
@@ -47,11 +48,12 @@ class Cell:
         self.walls[wall] = False
         other.walls[Cell.wall_pairs[wall]] = False
 
+
+
 class Maze:
     """
     The overarching Maze
     """
-
     def __init__(self, nx, ny, ix=0, iy=0):
         """
         initialise the maze grid. The maze consists of nx x ny cells,
@@ -68,11 +70,13 @@ class Maze:
     def cell_at(self, x, y):
         return self.maze_map[x][y]
 
+    def get_start_coords(self):
+        return (self.ix, self.iy)
+
     def __str__(self):
         """
         return a crude string version of the maze
         """
-
         maze_rows = ['-' * self.nx * 2]
         for y in range(self.ny):
             maze_row = ['|']
@@ -157,7 +161,7 @@ class Maze:
 
     def find_valid_neighbours(self, cell):
         """
-        return a list of unvisted neighbouring cells
+        return a list of unvisited neighbouring cells
         :param cell: instance of cell
         """
         delta = [('W', (-1, 0)),
@@ -177,7 +181,6 @@ class Maze:
         """
         algorithm that creates the maze and adds the path using unvisited nodes to create the maze
         """
-
         n = self.nx * self.ny
         cell_stack = []
         current_cell = self.cell_at(self.ix, self.iy)
