@@ -33,6 +33,7 @@ class MazeHandler:
     # create_team
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
+
     def move_player(self, direction, team):
         location = self.get_location(team)
         response = self.maze_runner.run_direction(location, direction)
