@@ -1,8 +1,7 @@
 import pickle
 
-# from MazeGenerator import Maze
-from MazeGenerator import Maze
-# from maze_server.maze_handler.MazeRunner import MazeRunner
+from maze_server.maze_handler.MazeGenerator import Maze
+from maze_server.maze_handler.MazeRunner import MazeRunner
 
 
 class MazeHandler:
@@ -11,16 +10,16 @@ class MazeHandler:
         ix, iy = 0, 0  # Maze entry position
         self.maze = Maze(nx, ny, ix, iy)
         self.maze.make_maze()
-        # self.maze_runner = MazeRunner(self.get_maze())
+        self.maze_runner = MazeRunner(self.get_maze())
         # # pickle.dump(self.maze, open("testMaze.pickle", "wb"))
         # self.maze = pickle.load(open("testMaze.pickle", "rb"))
         self.team_locations = {}  # assume no duplicates
 
-    # def create_maze(self):
-    #     self.maze.make_maze()
+    def create_maze(self):
+        self.maze.make_maze()
 
-    def get_challenge(self, node):
-        pass
+    def create_team(self, team):
+        self.team_locations.update({team: (0, 0)})
 
     def get_location(self, team):
         return self.maze.cell_at(*self.team_locations[team])
@@ -34,42 +33,38 @@ class MazeHandler:
     # create_team
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
-
-    # def move_player(self, direction, team):
-    #     location = self.get_location(team)
-    #     response = self.maze_runner.run_direction(location, direction)
-    #     code = response[0]
-    #     print(code)
-    #     self.set_location(response[1].get_coordinates, team)
-    #     movements = response[2]
-    #     print(movements)
-    #     print(response[1].get_coordinates())
-    #     if code == 4:
-    #         self.end_node(team)
-    #     if code == 3:
-    #         self.question(team)
-    #     if code == 2:
-    #         self.deadend(team)
-    #     if code == 1:
-    #         self.junction(response[3])
-    #     if code == 0:
-    #         print("Invalid Move")
+    def move_player(self, direction, team):
+        location = self.get_location(team)
+        response = self.maze_runner.run_direction(location, direction)
+        code = response[0]
+        self.set_location(response[1].get_coordinates(), team)
+        movements = response[2]
+        if code == 4:
+            self.end_node()
+        if code == 3:
+            self.question()
+        if code == 2:
+            self.deadend()
+        if code == 1:
+            self.junction(response[3])
+        if code == 0:
+            print("Invalid Move")
 
     def set_location(self, location, team):
-        self.team_location.update({team: location})
-        print(self.team_location)
+        self.team_locations.update({team: location})
 
-    def end_node(self, team):
+
+    def end_node(self):
         print("END NODE")
 
-    def question(self, team):
+    def question(self):
         print("Question")
 
-    def junction(self, team, possible_moves):
+    def junction(self, possible_moves):
         print("Junction")
         print(possible_moves)
 
-    def deadend(self, team):
+    def deadend(self):
         print("Deadend")
 
 mh = MazeHandler()
