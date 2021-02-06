@@ -1,5 +1,9 @@
 from django.shortcuts import render
 
-def index(request):
-    return render(request, "maze/index.html")
+from maze_handler.MazeHandler import MazeHandler
 
+
+def index(request):
+    mh = MazeHandler()
+
+    return render(request, "maze/index.html")

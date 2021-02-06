@@ -1,4 +1,4 @@
-class Maze:
+class MazeHandler:
     def __init__(self):
         pass
 
@@ -7,4 +7,3 @@ class Maze:
 
     def move_player(self, team, direction):
         pass
-
