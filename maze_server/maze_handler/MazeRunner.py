@@ -4,6 +4,7 @@ class MazeRunner:
         self.maze = maze
 
     def run_direction(self, location, direction):
+        print(direction)
         sx, sy = location.get_coordinates()
         direction_moves = 0
         movements = []
@@ -33,7 +34,9 @@ class MazeRunner:
                 movements.append([direction, direction_moves])
                 return self.junction(direction, location, movements)
             else:
+                print("HERE")
                 path_direction = self.direction(location, direction)
+                print(path_direction)
                 if path_direction != direction:
                     movements.append([direction, direction_moves])
                     direction = path_direction

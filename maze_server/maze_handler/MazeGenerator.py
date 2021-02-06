@@ -28,24 +28,31 @@ class Cell:
         self.state = 0
         self.walls = {'N': True, 'E': True, 'S': True, 'W': True}
 
+
     def __str__(self):
         cell_states_dict = {0: 'path', 1: 'question', 2: 'end', 3: 'start'}
         return "CELL ("+str(self.x)+","+str(self.y)+")  |  TYPE: "+cell_states_dict[self.state]+"  |  WALLS: "+json.dumps(self.walls)
 
+
     def has_wall(self, direction):
         return self.walls[direction]
+
 
     def get_wall_count(self):
         return sum(self.walls.values())
 
+
     def change_state(self, state):
         self.state = state
+
 
     def get_coordinates(self):
         return self.x, self.y
 
+
     def has_all_walls(self):
         return all(self.walls.values())
+
 
     def knock_down_wall(self, other, wall):
         self.walls[wall] = False
@@ -73,11 +80,14 @@ class Maze:
 
         self.maze_map = [[Cell(x, y) for y in range(ny)] for x in range(nx)]
 
+
     def cell_at(self, x, y):
         return self.maze_map[x][y]
 
+
     def get_start_coords(self):
         return (self.ix, self.iy)
+
 
     def __str__(self):
         """
@@ -112,6 +122,7 @@ class Maze:
                     maze_row.append(' +')
             maze_rows.append(''.join(maze_row))
         return '\n'.join(maze_rows)
+
 
     def write_svg (self, filename):
         """
@@ -165,6 +176,7 @@ class Maze:
             print('<line x1="0" y1="0" x2="0" y2="{}"/>'.format(height), file=f)
             print('</svg>', file=f)
 
+
     def find_valid_neighbours(self, cell):
         """
         return a list of unvisited neighbouring cells
@@ -182,6 +194,7 @@ class Maze:
                 if neighbour.has_all_walls():
                     neighbours.append((direction, neighbour))
         return neighbours
+
 
     def make_maze(self):
         """
@@ -210,10 +223,22 @@ class Maze:
         question_and_answers = self.get_question_selection(nr_qas)
 
         for x in range(nr_qas):
-            self.qa_lookup[x] = question_and_answers[x]
-            self.cell_at(random.randint(1, self.nx - 1), random.randint(1, self.ny - 1)).change_state(1)
+            question_cell = self.cell_at(random.randint(1, self.nx - 1), random.randint(1, self.ny - 1))
+            question_cell.change_state(1)
+
+            self.qa_lookup[(question_cell.x, question_cell.y)] = question_and_answers[x]
 
         self.cell_at(self.ix, self.iy).change_state(3)
+
+
+    def get_cell_question(self, coordinates):
+        try: return self.qa_lookup[coordinates]['Q']
+        except KeyError: return "ERROR: Incorrect coordinates, not a question node."
+
+
+    def get_cell_answer(self, coordinates):
+        try: return self.qa_lookup[coordinates]['A']
+        except KeyError: return "ERROR: Incorrect coordinates, not a question node."
 
 
     def get_question_selection(self, n=5, qa_filename="questions_and_answers.csv"):
