@@ -22,7 +22,7 @@ def team_selection(request):
     return render(request, "maze/team_selection.html", context)
 
 
-def json_register_team(request):
+def api_register_team(request):
     """Takes the user's input of team name and stores it in the session as the user's unique ID."""
     if request.is_ajax() and request.method == 'POST':
         team_name = request.POST.get("userSelection", "")
@@ -30,6 +30,22 @@ def json_register_team(request):
         request.session["user_id"] = team_name
         return JsonResponse({"success": True, "teamName": request.session["user_id"]})
     return JsonResponse({"success": False})
+
+
+def api_user_input(request):
+    """Process a command line command sent by the user."""
+    user_id = request.session["user_id"]
+    if request.is_ajax() and request.method == 'POST':
+        user_input = request.POST.get("userInput", "")
+        print("User from %s submitted %s" % (user_id, user_input))
+
+        # Do something with the input and get a response text line
+        output = "Example output line."
+
+        return JsonResponse({"success": True, "terminalLine": output})
+
+    else:
+        return JsonResponse({"success": False})
 
 
 def test_json_call(request):

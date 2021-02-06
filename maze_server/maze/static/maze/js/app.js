@@ -6,8 +6,20 @@ $(document).ready(function(){
 
 function submitUserInput() {
     const userInput = $("#userTextInput").val()
-    console.log(userInput)
-    $.post("/testjson", {"userInput": userInput}, function (data) {
-        console.log(data)
+    console.log("Input: " + userInput)
+    $.post("/userinput", {"userInput": userInput}, function (data) {
+        if (data.success) {
+            $("#terminalOutputBox").append(data.terminalLine + "<br>")
+            $('#terminalOutputBox').animate({scrollTop: $('#terminalOutputBox').prop("scrollHeight")}, 10);
+        } else {
+            console.log("ERROR: failed to post user input")
+        }
     })
+    $('#userTextInput').val("")
 }
+
+$('#userTextInput').on('keypress', function (e) {
+    if(e.which == 13) {
+        submitUserInput()
+    }
+});
