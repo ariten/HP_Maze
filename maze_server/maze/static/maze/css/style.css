@@ -1,4 +1,42 @@
+h2 {
+    font-family: 'EB Garamond', serif;
+}
+
+h5 {
+    font-family: 'EB Garamond', serif;
+}
+
+#terminalBox {
+    /* border: black 2px solid; */
+    border-radius: 4px;
+    background-color: #4d4d4d;
+    color: #1dc756;
+    padding: 0px 0px 5px 10px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1em;
+}
+
 #terminalOutputBox {
+    overflow-x: hidden;
     overflow-y: scroll;
     height: 15em;
+}
+
+#terminalBox span {
+    font-size: 1.3em;
+    margin-right: 0.3em;
+}
+
+#userTextInput:focus {
+    /* background-color: #ffffff; */
+    border: 0;
+    outline:none;
+    background-color: #4d4d4d;
+}
+
+#userTextInput {
+    border: 0;
+    background-color: #4d4d4d;
+    color: #1dc756;
+    /* border-bottom: 2px solid black; */
 }

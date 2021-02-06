@@ -40,7 +40,7 @@ def api_user_input(request):
         print("User from %s submitted %s" % (user_id, user_input))
 
         # Do something with the input and get a response text line
-        output = "Example output line."
+        output = "Example output line, " + user_input
 
         return JsonResponse({"success": True, "terminalLine": output})
 

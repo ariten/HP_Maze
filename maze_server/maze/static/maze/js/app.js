@@ -9,7 +9,7 @@ function submitUserInput() {
     console.log("Input: " + userInput)
     $.post("/userinput", {"userInput": userInput}, function (data) {
         if (data.success) {
-            $("#terminalOutputBox").append(data.terminalLine + "<br>")
+            $("#terminalOutputBox").append("<br>" + data.terminalLine)
             $('#terminalOutputBox').animate({scrollTop: $('#terminalOutputBox').prop("scrollHeight")}, 10);
         } else {
             console.log("ERROR: failed to post user input")
