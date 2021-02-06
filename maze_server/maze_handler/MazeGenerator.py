@@ -1,5 +1,8 @@
 import json
 import random
+import re
+
+
 """
 credit too Christian, github username:xnx, link to code https://github.com/scipython/scipython-maths/tree/master/maze
 """
@@ -65,6 +68,9 @@ class Maze:
         self.ny = ny
         self.ix = ix
         self.iy = iy
+
+        self.qa_lookup = dict()  # e.g. {qnode_id: {'coord': 5, 29, 'question': question, 'answer': answer}}
+
         self.maze_map = [[Cell(x, y) for y in range(ny)] for x in range(nx)]
 
     def cell_at(self, x, y):
@@ -199,6 +205,32 @@ class Maze:
             current_cell = next_cell
             nv += 1
         self.cell_at(random.randint(self.nx%10, self.nx-1), random.randint(self.ny%10, self.ny-1)).change_state(2)
-        for x in range(5):
+
+        nr_qas = 5
+        question_and_answers = self.get_question_selection(nr_qas)
+
+        for x in range(nr_qas):
+            self.qa_lookup[x] = question_and_answers[x]
             self.cell_at(random.randint(1, self.nx - 1), random.randint(1, self.ny - 1)).change_state(1)
+
         self.cell_at(self.ix, self.iy).change_state(3)
+
+
+    def get_question_selection(self, n=5, qa_filename="questions_and_answers.csv"):
+        """n: number of question nodes"""
+        with open(qa_filename, 'r') as f:
+            nr_qas = len(f.readlines())
+            f.seek(0)
+
+            sample_ids = random.sample(range(nr_qas), n)
+
+            qas = list()
+            for i, qa in enumerate(f):
+                if i in sample_ids:
+                    qas.append(qa)
+
+        qas_formatted = [{'Q': qa.split('","')[0].replace('"', ''), \
+                          'A': [re.sub('[\W_]', '', a.lower()) for a in qa.split('","')[1].split(",")]} \
+                          for qa in qas]
+
+        return qas_formatted
