@@ -10,7 +10,7 @@ class MazeHandler:
         ix, iy = 0, 0  # Maze entry position
         self.maze = Maze(nx, ny, ix, iy)
         self.maze.make_maze()
-        # self.maze_runner = MazeRunner(self.get_maze())
+        self.maze_runner = MazeRunner(self.get_maze())
         # # pickle.dump(self.maze, open("testMaze.pickle", "wb"))
         # self.maze = pickle.load(open("testMaze.pickle", "rb"))
         self.team_locations = {}  # assume no duplicates
@@ -19,10 +19,10 @@ class MazeHandler:
         self.maze.make_maze()
 
     def create_team(self, team):
-        self.team_location.update({team: (0, 0)})
+        self.team_locations.update({team: (0, 0)})
 
     def get_location(self, team):
-        return self.maze.cell_at(*self.team_location[team])
+        return self.maze.cell_at(*self.team_locations[team])
 
     def get_maze(self):
         return self.maze
@@ -51,7 +51,7 @@ class MazeHandler:
             print("Invalid Move")
 
     def set_location(self, location, team):
-        self.team_location.update({team: location})
+        self.team_locations.update({team: location})
 
 
     def end_node(self):
