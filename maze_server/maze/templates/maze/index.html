@@ -1,26 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Maze</title>
+{% extends "maze/base.html" %}
+{% load static %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    {% load static %} 
-    <link rel="stylesheet" href="{% static 'maze/css/style.css' %}">
-    {% csrf_token %}
-</head>
-<body>
-    <div class="container">
-        <h2 class="text-center mb-5">Harry Potter Maze Quiz</h2>
-        
-        <div class="input-group">
-            <input type="text" class="form-control" id="userTextInput">
-            <button class="btn btn-outline-secondary" type="button" onclick="submitUserInput()">Submit</button>
-        </div>
-    </div>
+{% block css %}<link rel="stylesheet" href="{% static 'maze/css/style.css' %}">{% endblock %}
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="{% static 'maze/js/app.js' %}"></script>
-</body>
-</html>
+{% block content %}
+<h2 class="text-center mb-2">Harry Potter Maze Quiz</h2>
+<h5 class="text-center mb-5">Playing as team {{ user_id }}</h5>
+
+<div class="input-group">
+    <input type="text" class="form-control" id="userTextInput">
+    <button class="btn btn-outline-secondary" type="button" onclick="submitUserInput()">Submit</button>
+</div>
+{% endblock %}
+
+{% block js %}<script src="{% static 'maze/js/app.js' %}"></script>{% endblock %}

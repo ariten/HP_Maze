@@ -1,19 +1,34 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import JsonResponse
+from .models import Team
 
 def index(request):
     """The page the user sees when they load the site."""
-    return render(request, "maze/index.html")
+    # Check to see if the user has selected a team yet, if not redirect to the selection page
+    if "user_id" not in request.session:
+        return redirect('team_selection')
+
+    user_id = request.session["user_id"]
+    return render(request, "maze/index.html", {"user_id": user_id})
 
 
-def register_team(request):
+def team_selection(request):
+    """Provide the user with a dropdown from which they select their team, then redirect them to the main page on success."""
+    # Get all of the teams
+    all_teams = Team.objects.all()
+    print(all_teams)
+    context = {"teams": all_teams}
+    return render(request, "maze/team_selection.html", context)
+
+
+def json_register_team(request):
     """Takes the user's input of team name and stores it in the session as the user's unique ID."""
     if request.is_ajax() and request.method == 'POST':
-        team_name = request.POST.get("userInput", "")
-        print("User registered team %s" % team_name)
-        request.session["userID"] = team_name
-        return JsonResponse({"success": True, "teamName": request.session["userID"]})
+        team_name = request.POST.get("userSelection", "")
+        print("User selected team %s" % team_name)
+        request.session["user_id"] = team_name
+        return JsonResponse({"success": True, "teamName": request.session["user_id"]})
     return JsonResponse({"success": False})
 
 
@@ -23,6 +38,6 @@ def test_json_call(request):
     if request.is_ajax() and request.method == 'POST':
         print(request.body)
         data = request.POST.get("userInput", "")
-        userID = request.session["userID"]
-        print("User from %s submitted %s" % (userID, data))
+        user_id = request.session["user_id"]
+        print("User from %s submitted %s" % (user_id, data))
     return JsonResponse({"direction": "North", "distance": 10})
