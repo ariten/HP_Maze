@@ -75,7 +75,6 @@ class MazeHandler:
             return {"info": "Naughty, you're not at the exit node.", "score": -1, "timeout": 0}
 
     def try_spell_escape(self, team, spell):
-        # TODO: if not last 1.5 minutes
         self.escaped_teams.append(team)
         return {"info": "You have used a spell to escape!", "score": -0.25, "timeout": 0}
 
