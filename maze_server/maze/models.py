@@ -5,3 +5,6 @@ class Team(models.Model):
         return self.team_name
 
     team_name = models.CharField(max_length=100)
+
+class GameStart(models.Model):
+    start_time = models.DateTimeField()

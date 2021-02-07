@@ -2,6 +2,17 @@ $(document).ready(function(){
     // Get the CSRF token and set it in the AJAX headers for later $.post calls
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     $.ajaxSetup({headers: { 'X-CSRFToken': csrftoken }});
+
+    // Check to see if the game has started, if it has not, lock out the terminal for the remaining time
+    $.getJSON(
+        "/timeuntilstart",
+        function (data) {
+            console.log(data)
+            if (!data.gameStarted) {
+                lockoutTerminal(data.duration)
+            }
+        }
+    )
 })
 
 function submitUserInput() {

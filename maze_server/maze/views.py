@@ -1,7 +1,8 @@
 import json
+from datetime import datetime
 from django.shortcuts import redirect, render
 from django.http import JsonResponse
-from .models import Team
+from .models import GameStart, Team
 
 def index(request):
     """The page the user sees when they load the site."""
@@ -53,6 +54,19 @@ def api_user_input(request):
 
     else:
         return JsonResponse({"success": False})
+
+
+def api_time_until_start(request):
+    """Return the time in seconds until the game starts."""
+    if request.is_ajax() and request.method == 'GET':
+        game_start_time = GameStart.objects.first().start_time.replace(tzinfo=None)
+        time_remaining = game_start_time - datetime.now()
+        delta = int(time_remaining.total_seconds())
+
+        if delta > 0:
+            return JsonResponse({"gameStarted": False, "duration": delta})
+        else:
+            return JsonResponse({"gameStarted": True})
 
 
 def test_json_call(request):
