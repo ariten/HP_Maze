@@ -1,8 +1,10 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.shortcuts import redirect, render
 from django.http import JsonResponse
 from .models import GameStart, Team
+
+DEBUG = True
 
 def index(request):
     """The page the user sees when they load the site."""
@@ -39,6 +41,25 @@ def api_user_input(request):
     if request.is_ajax() and request.method == 'POST':
         user_input = request.POST.get("userInput", "")
         print("User from %s submitted %s" % (user_id, user_input))
+
+        if not DEBUG:
+            game_start_time = GameStart.objects.first().start_time.replace(tzinfo=None)
+            if datetime.now() < game_start_time:
+                return JsonResponse({
+                    "success": True,
+                    "terminalLine": "The game has not started yet.",
+                    "lockout": False,
+                    "lockoutDuration": 0
+            })
+
+            game_end_time = game_start_time + timedelta(minutes=15)
+            if datetime.now() > game_end_time:
+                return JsonResponse({
+                    "success": True,
+                    "terminalLine": "You are too late, the game has ended.",
+                    "lockout": False,
+                    "lockoutDuration": 0
+            })
 
         # Do something with the input and get a response text line
         output = "Example output line, " + user_input

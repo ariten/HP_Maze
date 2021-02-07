@@ -7,8 +7,8 @@ $(document).ready(function(){
     $.getJSON(
         "/timeuntilstart",
         function (data) {
-            console.log(data)
             if (!data.gameStarted) {
+                console.log("Game starts in " + data.duration + " seconds, locking terminal")
                 lockoutTerminal(data.duration)
             }
         }
