@@ -63,7 +63,7 @@ class MazeHandler:
             info_string = self.question(team, self.get_location(team))
             return info_string # TODO: options for after the question is answered
         if code == 2:
-            info_string = self.deadend(team) ### returns current position instead of deadend?
+            info_string = self.deadend(team) # returns current position instead of deadend?
             return info_string # TODO: options for turning back
         if code == 1:
             return self.junction(response[3])

@@ -1,3 +1,11 @@
+INVERSE = {
+            'N': 'S',
+            'S': 'N',
+            'E': 'W',
+            'W': 'E'
+        }
+
+
 
 class MazeRunner:
     def __init__(self, maze):
@@ -30,7 +38,7 @@ class MazeRunner:
             walls = self.count_walls(location)
             if walls == 3:
                 movements.append([direction, direction_moves])
-                return self.deadend(sx, sy, movements)
+                return self.deadend(*location.get_coordinates(), direction, movements)
             elif walls <= 1:
                 movements.append([direction, direction_moves])
                 return self.junction(direction, location, movements)
@@ -75,19 +83,15 @@ class MazeRunner:
         code = [3, location, movements]
         return code
 
-    def deadend(self, sx, sy, movements):
+    def deadend(self, sx, sy, direction, movements):
         location = self.maze.cell_at(sx, sy)
-        code = [2, location, movements]
+        possible_moves = INVERSE[direction]
+
+        code = [2, location, movements, possible_moves]
         return code
 
     def junction(self, direction, location, movements):
-        inverse = {
-            'N': 'S',
-            'S': 'N',
-            'E': 'W',
-            'W': 'E'
-        }
-        backwards = inverse[direction]
+        backwards = INVERSE[direction]
         direction_combos = ['N', 'S', 'E', 'W']
         direction_combos.remove(backwards)
         possible_moves = [backwards]
