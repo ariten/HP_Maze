@@ -35,6 +35,11 @@ class MazeHandler:
                 trapped_teams.append(i)
         return trapped_teams
 
+    def get_start_options(self):
+        start_location = self.maze.cell_at(self.maze.ix, self.maze.iy)
+        options = start_location.no_wall_directions()
+        return {"info": "You have entered the maze. You can move in these directions:"+str(options), "score": 0, "timeout": 0}
+
     def process_input(self, team, input):
         input_formatted = re.sub('[\W_]', '', input.upper())
 
@@ -44,9 +49,6 @@ class MazeHandler:
 
         if input_formatted == 'EXIT':
             return self.try_exit(team)
-
-        # if self.check_timeout(team):
-        #     return "Time left before move " + self.get_remaining_time(team)
 
         if input_formatted.upper() in ['N', 'S', 'E', 'W']:  # direction
             return self.move_player(input_formatted, team)
@@ -101,14 +103,6 @@ class MazeHandler:
         else:
             # if there are no time penalty's against the team
             return False
-
-    # def get_remaining_time(self, team):
-    #     if team in self.timeouts:
-    #         event_time = self.timeouts[team]['set']
-    #         delta = self.timeouts[team]['delta']
-    #         return delta - (datetime.now() - event_time)
-    #     else:
-    #         return 0.0
 
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
