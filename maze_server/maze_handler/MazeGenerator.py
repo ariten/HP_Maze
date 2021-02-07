@@ -28,31 +28,27 @@ class Cell:
         self.state = 0
         self.walls = {'N': True, 'E': True, 'S': True, 'W': True}
 
-
     def __str__(self):
         cell_states_dict = {0: 'path', 1: 'question', 2: 'end', 3: 'start'}
         return "CELL ("+str(self.x)+","+str(self.y)+")  |  TYPE: "+cell_states_dict[self.state]+"  |  WALLS: "+json.dumps(self.walls)
 
-
     def has_wall(self, direction):
         return self.walls[direction]
 
+    def no_wall_directions(self):
+        return [direction for direction in self.walls.keys() if not self.walls[direction]]
 
     def get_wall_count(self):
         return sum(self.walls.values())
 
-
     def change_state(self, state):
         self.state = state
-
 
     def get_coordinates(self):
         return self.x, self.y
 
-
     def has_all_walls(self):
         return all(self.walls.values())
-
 
     def knock_down_wall(self, other, wall):
         self.walls[wall] = False
@@ -80,14 +76,11 @@ class Maze:
 
         self.maze_map = [[Cell(x, y) for y in range(ny)] for x in range(nx)]
 
-
     def cell_at(self, x, y):
         return self.maze_map[x][y]
 
-
     def get_start_coords(self):
         return (self.ix, self.iy)
-
 
     def __str__(self):
         """
@@ -183,7 +176,6 @@ class Maze:
             print('<line x1="0" y1="0" x2="0" y2="{}"/>'.format(height), file=f)
             print('</svg>', file=f)
 
-
     def find_valid_neighbours(self, cell):
         """
         return a list of unvisited neighbouring cells
@@ -201,7 +193,6 @@ class Maze:
                 if neighbour.has_all_walls():
                     neighbours.append((direction, neighbour))
         return neighbours
-
 
     def make_maze(self):
         """
@@ -237,16 +228,13 @@ class Maze:
 
         self.cell_at(self.ix, self.iy).change_state(3)
 
-
     def get_cell_question(self, location):
         try: return self.qa_lookup[(location.x, location.y)]['Q']
         except KeyError: return "ERROR: Incorrect location, not a question node."
 
-
     def get_cell_answer(self, location):
         try: return self.qa_lookup[(location.x, location.y)]['A']
         except KeyError: return "ERROR: Incorrect location, not a question node."
-
 
     def get_question_selection(self, n=5, qa_filename="questions_and_answers.csv"):
         """n: number of question nodes"""
