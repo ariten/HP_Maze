@@ -11,7 +11,6 @@ SECRET_SPELL = "EXIT"
 
 class MazeHandler:
     def __init__(self):
-        self.start_time = 0
         nx, ny = 10, 10  # Maze dimensions (ncols, nrows)
         ix, iy = 0, 0  # Maze entry position
         self.maze = Maze(nx, ny, ix, iy)
@@ -34,7 +33,7 @@ class MazeHandler:
         if team in self.escaped_teams:
             return "You have escaped, you can no longer move", False, 0
         if self.check_timeout(team):
-            return "Time left before move " + self.get_remaining_time(team), False, 0
+            return "Time left before move " + self.get_remaining_time(team)
         if input.upper() in ['N', 'S', 'E', 'W']:  # direction
             return self.move_player(input, team)
         elif input == SECRET_SPELL:  # spell
@@ -51,7 +50,8 @@ class MazeHandler:
 
     def try_escape(self, team, spell):
         # if not last 1.5 minutes
-        ##### TODO: Deduct score
+        # TODO: Deduct score
+        self.deduct_percentage(team, 0.25)
         return "You have escaped!", False, 0
 
     def get_location(self, team):
@@ -87,10 +87,11 @@ class MazeHandler:
         else:
             return 0.0
 
-    # create_team
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
-        self.set_score(team, 0)
+
+        return 0  # starting score
+        # self.set_score(team, 0)
 
     def move_player(self, direction, team):
         location = self.get_location(team)
@@ -106,62 +107,46 @@ class MazeHandler:
             info_string = self.question(team, self.get_location(team))
             return info_string # TODO: options for after the question is answered
         if code == 2:
-            info_string = self.deadend(team) ### returns current position instead of deadend?
+            info_string = self.deadend(team) # returns current position instead of deadend?
+            print(response)
             return info_string # TODO: options for turning back
         if code == 1:
+            print(response)
+            print(response[1])
             return self.junction(response[3])
         if code == 0:
             return "Invalid move, there is a wall in the way.", False, 0
 
         # TODO: return past moves and current options
-        return "Move processed (TODO: details)"
+        return {"info": "Move processed (TODO: details)", "score": 0, "timeout": 0}
 
     def set_location(self, location, team):
         self.team_locations.update({team: location})
 
     def end_node(self):
-        # TODO we need to have a method of tell us they want to escape, maybe a command 'escape'?+
-        return "You have found the end of the maze! Would you like to leave, or keep exploring?"
+        # TODO: add options
+        return {"info": "You have found the end of the maze! Would you like to leave, or keep exploring?", "score": 0, "timout": 0}
 
     def question(self, team, location):
         # TODO: Track which questions have already been answered
         """Returns the question as a string."""
-        return self.maze.get_cell_question(location)
+        return {"info": self.maze.get_cell_question(location), "score": 0, "timout": 0}
 
     def validate_answer(self, team, answer):
         answer_formatted = re.sub('[\W_]', '', answer.lower())
         location = self.get_location(team).get_coordinates()
 
         if answer_formatted in self.maze.get_cell_answer(location):
-            # TODO: add score
-            self.add_score(team, 50)
-            return "Correct answer"
+            # TODO: add options
+            return {"info": "Correct answer. Which way do you want to go?<br>", "score": 50, "timeout": 0}
         else:
-            ##### TODO: add timeout
-            self.set_timeout(team, 9)
-            return "Wrong answer, 10 second time penalty", True, 10
+            # TODO: add options
+            return {"info": "Wrong answer, 10 second time penalty. Which way do you want to go?<br>", "score": 0, "timeout": 10}
 
     def junction(self, options):
-        return {'info': "You have reached a junction. Which way do you want to go?", 'options': options}
+        return {"info": "You have reached a junction. Which way do you want to go?<br>"+str(options), "score": 0, "timeout": 0}
 
     def deadend(self, team):
-        return "You have reached a dead end."
+        # TODO add return direction
+        return {"info": "You have reached a dead end.<br>Turn back:", "score": 0, "timeout": 0}
 
-    def add_score(self, team, amount):
-        score = self.get_score(team)
-        score += amount
-        self.set_score(team, score)
-
-    def deduct_percentage(self, team, percentage):
-        score = self.get_score(team)
-        score *= percentage
-        self.set_score(team, score)
-
-    def get_score(self, team):
-        q = Team.objects.get(team_name=team)
-        return q.score
-
-    def set_score(self, team, score):
-        team = Team.objects.get(team_name=team)
-        team.score = score
-        team.save()
