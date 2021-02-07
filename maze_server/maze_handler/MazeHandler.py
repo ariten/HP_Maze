@@ -102,8 +102,7 @@ class MazeHandler:
         self.set_location(response[1].get_coordinates(), team)
         movements = response[2]
         if code == 4:
-            info_string = self.end_node(team)
-            return info_string # TODO: add options if not exiting
+            return self.end_node(*response[2:])
         if code == 3:
             # TODO: check if team has answered question
             return self.question(*response[1:3])
@@ -118,9 +117,8 @@ class MazeHandler:
     def set_location(self, location, team):
         self.team_locations.update({team: location})
 
-    def end_node(self):
-        # TODO: add options
-        return {"info": "You have found the end of the maze! Would you like to leave, or keep exploring?", "score": 0, "timout": 0}
+    def end_node(self, prev_path, options):
+        return {"info": "You have found the end of the maze! This is the path you followed:<br>"+str(prev_path)+"<br>Would you like to leave with 'Exit', or keep exploring?<br>"+str(['Exit']+options), "score": 0, "timout": 0}
 
     def question(self, location, prev_path):
         # TODO: Track which questions have already been answered
