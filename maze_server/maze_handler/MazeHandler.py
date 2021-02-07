@@ -6,7 +6,8 @@ from maze_server.maze_handler.MazeGenerator import Maze
 from maze_server.maze_handler.MazeRunner import MazeRunner
 from maze_server.maze.models import Team
 
-SECRET_SPELL = "EXIT"
+
+SECRET_SPELL = "PERICULUM"
 
 
 class MazeHandler:
@@ -29,17 +30,27 @@ class MazeHandler:
         return trapped_teams
 
     def process_input(self, team, input):
+        input_formatted = re.sub('[\W_]', '', input.upper())
+
         self.check_team(team)
         if team in self.escaped_teams:
-            return "You have escaped, you can no longer move", False, 0
+            return {"info": "You have escaped, you can no longer move.", "score": 0, "timeout": 0}
+
+        if input_formatted == 'EXIT':
+            return self.try_exit(team)
+
         if self.check_timeout(team):
             return "Time left before move " + self.get_remaining_time(team)
-        if input.upper() in ['N', 'S', 'E', 'W']:  # direction
-            return self.move_player(input, team)
-        elif input == SECRET_SPELL:  # spell
-            return self.try_escape(team, input)
+
+        if input_formatted.upper() in ['N', 'S', 'E', 'W']:  # direction
+            return self.move_player(input_formatted, team)
+
+        elif input_formatted == SECRET_SPELL:  # spell
+            return self.try_spell_escape(team, input_formatted)
+
         elif self.get_location(team).state == 1:  # answer
-            return self.validate_answer(team, input)
+            return self.validate_answer(team, input_formatted)
+
         else:
             return {"info": "Invalid input", "score": 0, "timeout": 0}
 
@@ -48,11 +59,17 @@ class MazeHandler:
             if team not in self.teams:
                 self.teams.append(team)
 
-    def try_escape(self, team, spell):
+    def try_exit(self, team):
+        if self.get_location(team).state == 2:  # end node
+            self.escaped_teams.append(team)
+            return {"info": "You have safely escaped the maze!", "score": 150, "timeout": 0}
+        else:
+            return {"info": "Naughty, you're not at the exit node.", "score": -1, "timeout": 0}
+
+    def try_spell_escape(self, team, spell):
         # if not last 1.5 minutes
-        # TODO: Deduct score
-        self.deduct_percentage(team, 0.25)
-        return "You have escaped!", False, 0
+        self.escaped_teams.append(team)
+        return {"info": "You have used a spell to escape!", "score": -0.25, "timeout": 0}
 
     def get_location(self, team):
         return self.maze.cell_at(*self.team_locations[team])
