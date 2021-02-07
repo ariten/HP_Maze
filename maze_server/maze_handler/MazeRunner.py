@@ -4,7 +4,6 @@ class MazeRunner:
         self.maze = maze
 
     def run_direction(self, location, direction):
-        print(direction)
         sx, sy = location.get_coordinates()
         direction_moves = 0
         movements = []
@@ -23,8 +22,10 @@ class MazeRunner:
             location = self.maze.cell_at(x + dx, y + dy)
             direction_moves += 1
             if location.state == 1:
+                movements.append([direction, direction_moves])
                 return self.question_node(location, movements)
             if location.state == 2:
+                movements.append([direction, direction_moves])
                 return self.end_node(location, movements)
             walls = self.count_walls(location)
             if walls == 3:
@@ -34,9 +35,7 @@ class MazeRunner:
                 movements.append([direction, direction_moves])
                 return self.junction(direction, location, movements)
             else:
-                print("HERE")
                 path_direction = self.direction(location, direction)
-                print(path_direction)
                 if path_direction != direction:
                     movements.append([direction, direction_moves])
                     direction = path_direction

@@ -231,14 +231,14 @@ class Maze:
         self.cell_at(self.ix, self.iy).change_state(3)
 
 
-    def get_cell_question(self, coordinates):
-        try: return self.qa_lookup[coordinates]['Q']
-        except KeyError: return "ERROR: Incorrect coordinates, not a question node."
+    def get_cell_question(self, location):
+        try: return self.qa_lookup[(location.x, location.y)]['Q']
+        except KeyError: return "ERROR: Incorrect location, not a question node."
 
 
-    def get_cell_answer(self, coordinates):
-        try: return self.qa_lookup[coordinates]['A']
-        except KeyError: return "ERROR: Incorrect coordinates, not a question node."
+    def get_cell_answer(self, location):
+        try: return self.qa_lookup[(location.x, location.y)]['A']
+        except KeyError: return "ERROR: Incorrect location, not a question node."
 
 
     def get_question_selection(self, n=5, qa_filename="questions_and_answers.csv"):
