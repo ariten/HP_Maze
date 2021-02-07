@@ -11,11 +11,19 @@ SECRET_SPELL = "PERICULUM"
 
 
 class MazeHandler:
-    def __init__(self):
-        nx, ny = 10, 10  # Maze dimensions (ncols, nrows)
+    def __init__(self, nx=50, ny=50, load_maze_file=None, save_maze_file=None):
         ix, iy = 0, 0  # Maze entry position
-        self.maze = Maze(nx, ny, ix, iy)
-        self.maze.make_maze()
+
+        if not load_maze_file==None:  # load pre-generated maze
+            self.maze = pickle.load(open(load_maze_file, "rb"))
+        else:  # generate maze
+            self.maze = Maze(nx, ny, ix, iy)
+            self.maze.make_maze()
+        
+        if not save_maze_file==None:
+            print("")
+            pickle.dump(self.maze, open(save_maze_file, "wb"))
+        
         self.maze_runner = MazeRunner(self.get_maze())
         self.team_locations = {}  # assume no duplicates
         self.timeouts = {}
