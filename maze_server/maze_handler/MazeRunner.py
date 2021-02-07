@@ -6,7 +6,6 @@ INVERSE = {
         }
 
 
-
 class MazeRunner:
     def __init__(self, maze):
         self.maze = maze
