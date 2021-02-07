@@ -1,0 +1,15 @@
+{% extends "maze/base.html" %}
+{% load static %}
+
+{% block title %}Side Challenges{% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{% static 'maze/css/style.css' %}">{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-2">Harry Potter Maze Quiz - Side Challenges</h2>
+<h5 class="text-center mb-5">Playing as team {{ user_id }}</h5>
+
+Challenges go here
+{% endblock %}
+
+{% block js %}<script src="{% static 'maze/js/side_challenges.js' %}"></script>{% endblock %}

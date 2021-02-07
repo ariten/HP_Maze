@@ -25,6 +25,16 @@ def team_selection(request):
     return render(request, "maze/team_selection.html", context)
 
 
+def page_side_challenges(request):
+    """Show the user a page of side challenges."""
+    # Check to see if the user has selected a team yet, if not redirect to the selection page
+    if "user_id" not in request.session:
+        return redirect('team_selection')
+    
+    user_id = request.session["user_id"]
+    return render(request, 'maze/side_challenges.html', {"user_id": user_id})
+
+
 def api_register_team(request):
     """Takes the user's input of team name and stores it in the session as the user's unique ID."""
     if request.is_ajax() and request.method == 'POST':

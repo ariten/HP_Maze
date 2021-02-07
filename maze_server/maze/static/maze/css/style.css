@@ -6,6 +6,10 @@ h5 {
     font-family: 'EB Garamond', serif;
 }
 
+h6 {
+    font-family: 'EB Garamond', serif;
+}
+
 #terminalBox {
     /* border: black 2px solid; */
     border-radius: 4px;

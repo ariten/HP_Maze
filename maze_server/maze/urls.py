@@ -10,5 +10,6 @@ urlpatterns = [
     path('teamselection', views.team_selection, name='team_selection'),
     path('userinput', views.api_user_input, name='user_input'),
     path('timeuntilstart', views.api_time_until_start, name='time_until_start'),
+    path('sidechallenges', views.page_side_challenges, name='side_challenges'),
 ]
 
