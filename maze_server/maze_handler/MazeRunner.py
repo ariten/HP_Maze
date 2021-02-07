@@ -30,7 +30,7 @@ class MazeRunner:
             direction_moves += 1
             if location.state == 1:
                 movements.append([direction, direction_moves])
-                return self.question_node(location, movements)
+                return self.question_node(direction, location, movements)
             if location.state == 2:
                 movements.append([direction, direction_moves])
                 return self.end_node(location, movements)
@@ -78,8 +78,17 @@ class MazeRunner:
         code = [4, location, movements]
         return code
 
-    def question_node(self, location, movements):
-        code = [3, location, movements]
+    def question_node(self, direction, location, movements):
+        # code = [3, location, movements]
+        # return code
+        backwards = INVERSE[direction]
+        direction_combos = ['N', 'S', 'E', 'W']
+        direction_combos.remove(backwards)
+        possible_moves = [backwards]
+        for i in direction_combos:
+            if not location.has_wall(i):
+                possible_moves.append(i)
+        code = [3, location, movements, possible_moves]
         return code
 
     def deadend(self, sx, sy, direction, movements):

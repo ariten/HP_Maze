@@ -103,8 +103,8 @@ class MazeHandler:
             info_string = self.end_node(team)
             return info_string # TODO: add options if not exiting
         if code == 3:
-            info_string = self.question(team, self.get_location(team))
-            return info_string # TODO: options for after the question is answered
+            # TODO: check if team has answered question
+            return self.question(*response[1:3]) # TODO: options for after the question is answered
         if code == 2:
             return self.deadend(*response[2:])
         if code == 1:
@@ -120,10 +120,10 @@ class MazeHandler:
         # TODO: add options
         return {"info": "You have found the end of the maze! Would you like to leave, or keep exploring?", "score": 0, "timout": 0}
 
-    def question(self, team, location):
+    def question(self, location, prev_path):
         # TODO: Track which questions have already been answered
-        """Returns the question as a string."""
-        return {"info": self.maze.get_cell_question(location), "score": 0, "timout": 0}
+        info = "Taking these steps along a corridor have brought you to a question node. To continue, answer this question:<br>"+str(prev_path)+"<br>"+self.maze.get_cell_question(location)
+        return {"info": info, "score": 0, "timeout": 0}
 
     def validate_answer(self, team, answer):
         answer_formatted = re.sub('[\W_]', '', answer.lower())
