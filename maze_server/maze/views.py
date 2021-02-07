@@ -123,10 +123,13 @@ def api_time_until_start(request):
         time_remaining = game_start_time - datetime.now()
         delta = int(time_remaining.total_seconds())
 
+        # Calculate seconds left on the 15 min timer
+        timer_remaining = max(int((timedelta(minutes=15) + time_remaining).total_seconds()), 0)
+
         if delta > 0:
             return JsonResponse({"gameStarted": False, "duration": delta})
         else:
-            return JsonResponse({"gameStarted": True})
+            return JsonResponse({"gameStarted": True, "duration": timer_remaining})
 
 
 def test_json_call(request):

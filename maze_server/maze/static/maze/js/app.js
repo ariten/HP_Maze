@@ -10,6 +10,11 @@ $(document).ready(function(){
             if (!data.gameStarted) {
                 console.log("Game starts in " + data.duration + " seconds, locking terminal")
                 lockoutTerminal(data.duration)
+            } else {
+                if (data.duration > 0) {
+                    display = document.querySelector('#mainTimer')
+                    startTimer(data.duration, display)
+                }
             }
         }
     )
