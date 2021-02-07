@@ -11,11 +11,27 @@ function submitUserInput() {
         if (data.success) {
             $("#terminalOutputBox").append("<br>" + data.terminalLine)
             $('#terminalOutputBox').animate({scrollTop: $('#terminalOutputBox').prop("scrollHeight")}, 10);
+
+            // Handle lockout if user got a question wrong
+            if (data.lockout) {
+                console.log("Locking terminal for " + data.lockoutDuration + " seconds")
+                lockoutTerminal(data.lockoutDuration)
+            }
         } else {
             console.log("ERROR: failed to post user input")
         }
     })
     $('#userTextInput').val("")
+}
+
+function lockoutTerminal(duration) {
+    $('#userTextInput').prop("disabled", true)
+    $('#terminalBottomBar').css("background-color", "#791212")
+    setTimeout(function () {
+        $('#userTextInput').prop("disabled", false)
+        $('#userTextInput').focus()
+        $('#terminalBottomBar').css("background-color", "#4d4d4d")
+    }, duration * 1000)
 }
 
 $('#userTextInput').on('keypress', function (e) {

@@ -42,7 +42,14 @@ def api_user_input(request):
         # Do something with the input and get a response text line
         output = "Example output line, " + user_input
 
-        return JsonResponse({"success": True, "terminalLine": output})
+        reply_data = {
+            "success": True,
+            "terminalLine": output,
+            "lockout": True,
+            "lockoutDuration": 3
+        }
+
+        return JsonResponse(reply_data)
 
     else:
         return JsonResponse({"success": False})

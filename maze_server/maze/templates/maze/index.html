@@ -4,13 +4,13 @@
 {% block css %}<link rel="stylesheet" href="{% static 'maze/css/style.css' %}">{% endblock %}
 
 {% block content %}
-<h2 class="text-center mb-2">Harry Potter Maze Quiz</h2>
+<h2 class="text-center mb-2 mt-4">Harry Potter Maze Quiz</h2>
 <h5 class="text-center mb-5">Playing as team {{ user_id }}</h5>
 
 <div class="vertical-center">
     <div id="terminalBox">
         <p id="terminalOutputBox" class="noscrollbar mb-0">Welcome to the maze.</p>
-        <div class="d-flex">
+        <div id="terminalBottomBar" class="d-flex">
             <span>></span>
             <input type="text" id="userTextInput" class="flex-grow-1" autocomplete="off" data-lpignore="true" autofocus placeholder="Type your action here...">
         </div>
