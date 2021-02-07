@@ -19,12 +19,12 @@ class MazeHandler:
         self.maze_runner = MazeRunner(self.get_maze())
         self.team_locations = {}  # assume no duplicates
         self.timeouts = {}
-        self.teams = []
         self.escaped_teams = []
+        self.team_answered_questions = {}
 
     def game_over(self):
         trapped_teams = []
-        for i in self.teams:
+        for i in self.team_locations.keys():
             if i not in self.escaped_teams:
                 trapped_teams.append(i)
         return trapped_teams
@@ -40,6 +40,7 @@ class MazeHandler:
             return self.try_exit(team)
 
         if self.check_timeout(team):
+            # TODO: what does this do?
             return "Time left before move " + self.get_remaining_time(team)
 
         if input_formatted.upper() in ['N', 'S', 'E', 'W']:  # direction
@@ -48,7 +49,7 @@ class MazeHandler:
         elif input_formatted == SECRET_SPELL:  # spell
             return self.try_spell_escape(team, input_formatted)
 
-        elif self.get_location(team).state == 1:  # answer
+        elif self.get_location(team).state == 1:  # question node answer
             return self.validate_answer(team, input_formatted)
 
         else:
@@ -56,8 +57,8 @@ class MazeHandler:
 
     def check_team(self, team):
         if team not in self.escaped_teams:
-            if team not in self.teams:
-                self.teams.append(team)
+            if team not in self.team_locations.keys():
+                self.register_team(team)
 
     def try_exit(self, team):
         if self.get_location(team).state == 2:  # end node
@@ -67,7 +68,7 @@ class MazeHandler:
             return {"info": "Naughty, you're not at the exit node.", "score": -1, "timeout": 0}
 
     def try_spell_escape(self, team, spell):
-        # if not last 1.5 minutes
+        # TODO: if not last 1.5 minutes
         self.escaped_teams.append(team)
         return {"info": "You have used a spell to escape!", "score": -0.25, "timeout": 0}
 
@@ -106,14 +107,16 @@ class MazeHandler:
 
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
-
+        self.team_answered_questions[team] = set()
         return {"info": "Team "+team+" registered.", "score": 0, "timeout": 0}
 
     def move_player(self, direction, team):
         # TODO: don't let team move if on unanswered question node
         location = self.get_location(team)
         response = self.maze_runner.run_direction(location, direction)
-        print(self.team_locations)
+
+        if location.state == 1 and not location.get_coordinates() in self.team_answered_questions[team]:  # unanswered question node
+            return {"info": "You have to answer the question before moving.", "score": -1, "timeout": 0}
 
         code = response[0]
         self.set_location(response[1].get_coordinates(), team)
@@ -121,8 +124,8 @@ class MazeHandler:
         if code == 4:
             return self.end_node(*response[2:])
         if code == 3:
-            # TODO: check if team has answered question
-            return self.question(*response[1:3])
+            print("*****", self.team_answered_questions)
+            return self.question(team, *response[1:])
         if code == 2:
             return self.deadend(*response[2:])
         if code == 1:
@@ -137,20 +140,30 @@ class MazeHandler:
     def end_node(self, prev_path, options):
         return {"info": "You have found the end of the maze! This is the path you followed:<br>"+str(prev_path)+"<br>Would you like to leave with 'Exit', or keep exploring?<br>"+str(['Exit']+options), "score": 0, "timout": 0}
 
-    def question(self, location, prev_path):
-        # TODO: Track which questions have already been answered
-        info = "Taking these steps along a corridor have brought you to a question node. To continue, answer this question:<br>"+str(prev_path)+"<br>"+self.maze.get_cell_question(location)
+    def question(self, team, location, prev_path, options):
+        if location.get_coordinates() in self.team_answered_questions[team]:
+            info = "You have reached a question node that you have already answered by this path:<br>"+str(prev_path)+"<br>Where would you like to go next? "+str(options)
+        else:
+            info = "Taking these steps along a corridor have brought you to a question node. To continue, answer this question:<br>"+str(prev_path)+"<br>"+self.maze.get_cell_question(location)
+
         return {"info": info, "score": 0, "timeout": 0}
 
     def validate_answer(self, team, answer):
-        answer_formatted = re.sub('[\W_]', '', answer.lower())
         location = self.get_location(team)
+        coordinates = location.get_coordinates()
         options = location.no_wall_directions()
 
-        if answer_formatted in self.maze.get_cell_answer(location):
-            return {"info": "Correct answer. Which way do you want to go next?<br>"+str(options), "score": 50, "timeout": 0}
+        if coordinates in self.team_answered_questions[team]:
+            info = "You have already answered this question.<br>Where would you like to go next? "+str(options)
+            return {"info": info, "score": 0, "timeout": 0}
         else:
-            return {"info": "Wrong answer, 10 second time penalty. Which way do you want to go next?<br>"+str(options), "score": 0, "timeout": 10}
+            self.team_answered_questions[team].add(location.get_coordinates())
+            answer_formatted = re.sub('[\W_]', '', answer.lower())
+
+            if answer_formatted in self.maze.get_cell_answer(location):
+                return {"info": "Correct answer. Which way do you want to go next?<br>"+str(options), "score": 50, "timeout": 0}
+            else:
+                return {"info": "Wrong answer, 10 second time penalty. Which way do you want to go next?<br>"+str(options), "score": 0, "timeout": 10}
 
     def junction(self, prev_path, options):
         info = "Taking these steps along a corridor have brought you to a junction:<br>"+str(prev_path)+"<br>Which way do you want to go?<br>"+str(options)
