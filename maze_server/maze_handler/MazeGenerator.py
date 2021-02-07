@@ -123,17 +123,14 @@ class Maze:
             maze_rows.append(''.join(maze_row))
         return '\n'.join(maze_rows)
 
+    def write_svg(self, filename):
+        """Write an SVG image of the maze to filename."""
 
-    def write_svg (self, filename):
-        """
-        Write the maze into a SVG file
-        :param filename: The file name of the SVG file
-        """
         aspect_ratio = self.nx / self.ny
-        # Pad the maze all ar+ound by this amount.
+        # Pad the maze all around by this amount.
         padding = 10
         # Height and width of the maze image (excluding padding), in pixels
-        height = 1000
+        height = 500
         width = int(height * aspect_ratio)
         # Scaling factors mapping maze coordinates to image coordinates
         scy, scx = height / self.ny, width / self.nx
@@ -143,6 +140,10 @@ class Maze:
 
             print('<line x1="{}" y1="{}" x2="{}" y2="{}"/>'
                   .format(ww_x1, ww_y1, ww_x2, ww_y2), file=ww_f)
+
+        def write_circle(ww_f, ww_x, ww_y, r, color):
+            """write a circle into the SVG"""
+            print('<circle cx="{}" cy="{}" r="{}" fill="{}" />'.format(ww_x, ww_y, r, color), file=ww_f)
 
         # Write the SVG image file for maze
         with open(filename, 'w') as f:
@@ -170,6 +171,12 @@ class Maze:
                     if self.cell_at(x, y).walls['E']:
                         x1, y1, x2, y2 = (x + 1) * scx, y * scy, (x + 1) * scx, (y + 1) * scy
                         write_wall(f, x1, y1, x2, y2)
+                    if self.cell_at(x, y).state == 1:
+                        x1, y1, r = x * scx + scx / 2, y * scy + scy / 2, min(scx / 2.5, scy / 2.5)
+                        write_circle(f, x1, y1, r, color='Red')
+                    if self.cell_at(x, y).state == 2:
+                        x1, y1, r = x * scx + scx / 2, y * scy + scy / 2, min(scx / 2.5, scy / 2.5)
+                        write_circle(f, x1, y1, r, color='Green')
             # Draw the North and West maze border, which won't have been drawn
             # by the procedure above.
             print('<line x1="0" y1="0" x2="{}" y2="0"/>'.format(width), file=f)
