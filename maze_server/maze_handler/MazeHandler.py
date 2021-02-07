@@ -23,10 +23,11 @@ class MazeHandler:
         self.escaped_teams = []
 
     def game_over(self):
+        trapped_teams = []
         for i in self.teams:
             if i not in self.escaped_teams:
-                self.deduct_percentage(team=i, percentage=0.50)
-                self.escaped_teams.append(i)
+                trapped_teams.append(i)
+        return trapped_teams
 
     def process_input(self, team, input):
         self.check_team(team)
@@ -48,12 +49,9 @@ class MazeHandler:
             if team not in self.teams:
                 self.teams.append(team)
 
-
-
     def try_escape(self, team, spell):
         # if not last 1.5 minutes
         ##### TODO: Deduct score
-        self.deduct_percentage(team, 0.25)
         return "You have escaped!", False, 0
 
     def get_location(self, team):
@@ -122,7 +120,7 @@ class MazeHandler:
         self.team_locations.update({team: location})
 
     def end_node(self):
-        # TODO we need to have a method of tell us they want to escape, maybe a command 'escape'?
+        # TODO we need to have a method of tell us they want to escape, maybe a command 'escape'?+
         return "You have found the end of the maze! Would you like to leave, or keep exploring?"
 
     def question(self, team, location):
