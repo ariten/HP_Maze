@@ -46,7 +46,7 @@ def api_user_input(request):
             "success": True,
             "terminalLine": output,
             "lockout": True,
-            "lockoutDuration": 3
+            "lockoutDuration": 10
         }
 
         return JsonResponse(reply_data)
