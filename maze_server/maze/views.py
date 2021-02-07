@@ -42,6 +42,9 @@ def api_user_input(request):
         user_input = request.POST.get("userInput", "")
         print("User from %s submitted %s" % (user_id, user_input))
 
+        team = Team.objects.get(team_name=user_id)
+        print(team)
+
         if not DEBUG:
             game_start_time = GameStart.objects.first().start_time.replace(tzinfo=None)
             if datetime.now() < game_start_time:
@@ -60,18 +63,32 @@ def api_user_input(request):
                     "terminalLine": "You are too late, the game has ended.",
                     "lockout": False,
                     "lockoutDuration": 0,
-                    "score": 15,
+                    "score": team.score,
             })
 
-        # Do something with the input and get a response text line
+        # Pass the user input to the maze code and get back assorted info
+        # ... = maze_handler.process_user_input(user_id, user_input)
+        # SIMULATED OUTPUT OF MAZE CODE
         output = "Example output line, " + user_input
+        score_change = 50
+        lockout = False
+        duration = 7
+        # End of simulated output
+
+        # Update the team score based on the returned delta
+        if score_change > 0 and score_change < 1:
+            team.score = int(team.score * score_change)
+            team.save()
+        if score_change >= 1:
+            team.score += score_change
+            team.save()
 
         reply_data = {
             "success": True,
             "terminalLine": output,
-            "lockout": True,
-            "lockoutDuration": 10,
-            "score": 15,
+            "lockout": lockout,
+            "lockoutDuration": duration,
+            "score": team.score,
         }
 
         return JsonResponse(reply_data)
