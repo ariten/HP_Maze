@@ -37,6 +37,8 @@ class Cell:
     def has_wall(self, direction):
         return self.walls[direction]
 
+    def no_wall_directions(self):
+        return [direction for direction in self.walls.keys() if not self.walls[direction]]
 
     def get_wall_count(self):
         return sum(self.walls.values())

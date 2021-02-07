@@ -41,7 +41,7 @@ class MazeHandler:
         elif self.get_location(team).state == 1:  # answer
             return self.validate_answer(team, input)
         else:
-            return "Invalid input", False, 0
+            return {"info": "Invalid input", "score": 0, "timeout": 0}
 
     def check_team(self, team):
         if team not in self.escaped_teams:
@@ -93,8 +93,10 @@ class MazeHandler:
         return {"info": "Team "+team+" registered.", "score": 0, "timeout": 0}
 
     def move_player(self, direction, team):
+        # TODO: don't let team move if on unanswered question node
         location = self.get_location(team)
         response = self.maze_runner.run_direction(location, direction)
+        print(self.team_locations)
 
         code = response[0]
         self.set_location(response[1].get_coordinates(), team)
@@ -104,7 +106,7 @@ class MazeHandler:
             return info_string # TODO: add options if not exiting
         if code == 3:
             # TODO: check if team has answered question
-            return self.question(*response[1:3]) # TODO: options for after the question is answered
+            return self.question(*response[1:3])
         if code == 2:
             return self.deadend(*response[2:])
         if code == 1:
@@ -127,14 +129,13 @@ class MazeHandler:
 
     def validate_answer(self, team, answer):
         answer_formatted = re.sub('[\W_]', '', answer.lower())
-        location = self.get_location(team).get_coordinates()
+        location = self.get_location(team)
+        options = location.no_wall_directions()
 
         if answer_formatted in self.maze.get_cell_answer(location):
-            # TODO: add options
-            return {"info": "Correct answer. Which way do you want to go?<br>", "score": 50, "timeout": 0}
+            return {"info": "Correct answer. Which way do you want to go next?<br>"+str(options), "score": 50, "timeout": 0}
         else:
-            # TODO: add options
-            return {"info": "Wrong answer, 10 second time penalty. Which way do you want to go?<br>", "score": 0, "timeout": 10}
+            return {"info": "Wrong answer, 10 second time penalty. Which way do you want to go next?<br>"+str(options), "score": 0, "timeout": 10}
 
     def junction(self, prev_path, options):
         info = "Taking these steps along a corridor have brought you to a junction:<br>"+str(prev_path)+"<br>Which way do you want to go?<br>"+str(options)
