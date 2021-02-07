@@ -2,9 +2,8 @@ import pickle
 import re
 
 from datetime import datetime, timedelta
-from maze_server.maze_handler.MazeGenerator import Maze
-from maze_server.maze_handler.MazeRunner import MazeRunner
-from maze_server.maze.models import Team
+from MazeGenerator import Maze
+from MazeRunner import MazeRunner
 
 
 SECRET_SPELL = "PERICULUM"
@@ -19,11 +18,10 @@ class MazeHandler:
         else:  # generate maze
             self.maze = Maze(nx, ny, ix, iy)
             self.maze.make_maze()
-        
-        if not save_maze_file==None:
-            print("")
+
+        if not save_maze_file==None:  # save maze
             pickle.dump(self.maze, open(save_maze_file, "wb"))
-        
+
         self.maze_runner = MazeRunner(self.get_maze())
         self.team_locations = {}  # assume no duplicates
         self.timeouts = {}
@@ -47,9 +45,8 @@ class MazeHandler:
         if input_formatted == 'EXIT':
             return self.try_exit(team)
 
-        if self.check_timeout(team):
-            # TODO: what does this do?
-            return "Time left before move " + self.get_remaining_time(team)
+        # if self.check_timeout(team):
+        #     return "Time left before move " + self.get_remaining_time(team)
 
         if input_formatted.upper() in ['N', 'S', 'E', 'W']:  # direction
             return self.move_player(input_formatted, team)
@@ -105,13 +102,13 @@ class MazeHandler:
             # if there are no time penalty's against the team
             return False
 
-    def get_remaining_time(self, team):
-        if team in self.timeouts:
-            event_time = self.timeouts[team]['set']
-            delta = self.timeouts[team]['delta']
-            return delta - (datetime.now() - event_time)
-        else:
-            return 0.0
+    # def get_remaining_time(self, team):
+    #     if team in self.timeouts:
+    #         event_time = self.timeouts[team]['set']
+    #         delta = self.timeouts[team]['delta']
+    #         return delta - (datetime.now() - event_time)
+    #     else:
+    #         return 0.0
 
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
@@ -119,7 +116,6 @@ class MazeHandler:
         return {"info": "Team "+team+" registered.", "score": 0, "timeout": 0}
 
     def move_player(self, direction, team):
-        # TODO: don't let team move if on unanswered question node
         location = self.get_location(team)
         response = self.maze_runner.run_direction(location, direction)
 
@@ -179,4 +175,3 @@ class MazeHandler:
 
     def deadend(self, prev_path, options):
         return {"info": "Following this path, you have reached a dead end:<br>"+str(prev_path)+"<br>Turn back: "+str(options), "score": 0, "timeout": 0}
-
