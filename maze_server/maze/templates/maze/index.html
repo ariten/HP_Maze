@@ -1,11 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Maze</title>
-</head>
-<body>
-    Harry Potter Maze Quiz
-</body>
-</html>
+{% extends "maze/base.html" %}
+{% load static %}
+
+{% block css %}<link rel="stylesheet" href="{% static 'maze/css/style.css' %}">{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-2">Harry Potter Maze Quiz</h2>
+<h5 class="text-center mb-5">Playing as team {{ user_id }}</h5>
+
+<p id="terminalOutputBox"></p>
+
+<div class="input-group">
+    <input type="text" class="form-control" id="userTextInput">
+    <button class="btn btn-outline-secondary" type="button" onclick="submitUserInput()">Submit</button>
+</div>
+{% endblock %}
+
+{% block js %}<script src="{% static 'maze/js/app.js' %}"></script>{% endblock %}

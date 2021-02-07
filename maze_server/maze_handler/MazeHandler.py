@@ -3,7 +3,7 @@ import re
 
 from maze_server.maze_handler.MazeGenerator import Maze
 from maze_server.maze_handler.MazeRunner import MazeRunner
-
+from maze_server.maze.models import Team
 
 SECRET_SPELL = "EXIT"
 
@@ -38,19 +38,16 @@ class MazeHandler:
     def get_location(self, team):
         return self.maze.cell_at(*self.team_locations[team])
 
-
     def get_maze(self):
         return self.maze
-
 
     def get_timeout(self, team, node):
         pass
 
-
     # create_team
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
-
+        self.set_score(team, 0)
 
     def move_player(self, direction, team):
         location = self.get_location(team)
@@ -109,3 +106,19 @@ class MazeHandler:
 
     def deadend(self, team):
         return "You have reached a dead end."
+
+
+    def add_score(self, team, amount):
+        score = self.get_score(team)
+        score += amount
+        self.set_score(team, score)
+
+
+    def get_score(self, team):
+        q = Team.objects.get(team_name=team)
+        print(q.score)
+        return q.score
+
+
+    def set_score(self, team, score):
+        pass
