@@ -14,10 +14,8 @@ class MazeHandler:
         nx, ny = 10, 10  # Maze dimensions (ncols, nrows)
         ix, iy = 0, 0  # Maze entry position
         self.maze = Maze(nx, ny, ix, iy)
+        self.maze.make_maze()
         self.maze_runner = MazeRunner(self.get_maze())
-        # # pickle.dump(self.maze, open("testMaze.pickle", "wb"))
-        # pickle.dump(self.maze, open("testMaze.pickle", "wb"))
-        self.maze = pickle.load(open("testMaze.pickle", "rb"))
         self.team_locations = {}  # assume no duplicates
         self.timeouts = {}
 
@@ -81,41 +79,44 @@ class MazeHandler:
     def move_player(self, direction, team):
         location = self.get_location(team)
         response = self.maze_runner.run_direction(location, direction)
+
         code = response[0]
         self.set_location(response[1].get_coordinates(), team)
         movements = response[2]
         if code == 4:
-            return self.end_node(movements)
+            info_string = self.end_node(team)
+            return info_string # TODO: add options if not exiting
         if code == 3:
-            return self.question(team, location, movements)
+            info_string = self.question(team, self.get_location(team))
+            return info_string # TODO: options for after the question is answered
         if code == 2:
-            return self.deadend(movements)
+            info_string = self.deadend(team) ### returns current position instead of deadend?
+            return info_string # TODO: options for turning back
         if code == 1:
-            return self.junction(movements, response[3])
+            return self.junction(response[3])
         if code == 0:
             return "Invalid move, there is a wall in the way.", False, 0
 
-        ##### TODO: return past moves and current options
+        # TODO: return past moves and current options
         return "Move processed (TODO: details)"
 
     def set_location(self, location, team):
         self.team_locations.update({team: location})
 
-    def end_node(self, movements):
-        return "You have found the end of the maze! Would you like to leave, or keep exploring?", False, 0
+    def end_node(self):
+        return "You have found the end of the maze! Would you like to leave, or keep exploring?"
 
-    def question(self, team, location, movements):
-        ##### TODO: Track which questions have already been answered
+    def question(self, team, location):
+        # TODO: Track which questions have already been answered
         """Returns the question as a string."""
         return self.maze.get_cell_question(location)
 
     def validate_answer(self, team, answer):
         answer_formatted = re.sub('[\W_]', '', answer.lower())
         location = self.get_location(team).get_coordinates()
-        print(location)
 
         if answer_formatted in self.maze.get_cell_answer(location):
-            ##### TODO: add score
+            # TODO: add score
             self.add_score(team, 50)
             return "Correct answer"
         else:
@@ -123,10 +124,10 @@ class MazeHandler:
             self.set_timeout(team, 9)
             return "Wrong answer, 10 second time penalty", True, 10
 
-    def junction(self, movements, possible_moves):
-        return "You have reached a junction. Which way do you want to go?" + possible_moves
+    def junction(self, options):
+        return {'info': "You have reached a junction. Which way do you want to go?", 'options': options}
 
-    def deadend(self, movements):
+    def deadend(self, team):
         return "You have reached a dead end."
 
     def add_score(self, team, amount):
@@ -147,10 +148,3 @@ class MazeHandler:
         team = Team.objects.get(team_name=team)
         team.score = score
         team.save()
-
-
-mh = MazeHandler()
-print(mh.maze)
-mh.register_team('team1')
-print(mh.team_locations)
-print(mh.move_player('E', 'team1'))
