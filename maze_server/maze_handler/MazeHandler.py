@@ -11,6 +11,7 @@ SECRET_SPELL = "EXIT"
 
 class MazeHandler:
     def __init__(self):
+        self.start_time = 0
         nx, ny = 10, 10  # Maze dimensions (ncols, nrows)
         ix, iy = 0, 0  # Maze entry position
         self.maze = Maze(nx, ny, ix, iy)
@@ -18,10 +19,21 @@ class MazeHandler:
         self.maze_runner = MazeRunner(self.get_maze())
         self.team_locations = {}  # assume no duplicates
         self.timeouts = {}
+        self.teams = []
+        self.escaped_teams = []
+
+    def game_over(self):
+        for i in self.teams:
+            if i not in self.escaped_teams:
+                self.deduct_percentage(team=i, percentage=0.50)
+                self.escaped_teams.append(i)
 
     def process_input(self, team, input):
+        self.check_team(team)
+        if team in self.escaped_teams:
+            return "You have escaped, you can no longer move", False, 0
         if self.check_timeout(team):
-            return "Time left before move " + self.get_remaining_time(team)
+            return "Time left before move " + self.get_remaining_time(team), False, 0
         if input.upper() in ['N', 'S', 'E', 'W']:  # direction
             return self.move_player(input, team)
         elif input == SECRET_SPELL:  # spell
@@ -31,12 +43,18 @@ class MazeHandler:
         else:
             return "Invalid input", False, 0
 
+    def check_team(self, team):
+        if team not in self.escaped_teams:
+            if team not in self.teams:
+                self.teams.append(team)
+
+
+
     def try_escape(self, team, spell):
         # if not last 1.5 minutes
         ##### TODO: Deduct score
         self.deduct_percentage(team, 0.25)
         return "You have escaped!", False, 0
-
 
     def get_location(self, team):
         return self.maze.cell_at(*self.team_locations[team])
@@ -104,6 +122,7 @@ class MazeHandler:
         self.team_locations.update({team: location})
 
     def end_node(self):
+        # TODO we need to have a method of tell us they want to escape, maybe a command 'escape'?
         return "You have found the end of the maze! Would you like to leave, or keep exploring?"
 
     def question(self, team, location):
