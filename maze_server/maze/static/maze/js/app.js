@@ -22,6 +22,7 @@ function submitUserInput() {
         if (data.success) {
             $("#terminalOutputBox").append("<br>" + data.terminalLine)
             $('#terminalOutputBox').animate({scrollTop: $('#terminalOutputBox').prop("scrollHeight")}, 10);
+            $('#scoreBox').text("Score: " + data.score)
 
             // Handle lockout if user got a question wrong
             if (data.lockout) {

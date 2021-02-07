@@ -49,7 +49,8 @@ def api_user_input(request):
                     "success": True,
                     "terminalLine": "The game has not started yet.",
                     "lockout": False,
-                    "lockoutDuration": 0
+                    "lockoutDuration": 0,
+                    "score": 0,
             })
 
             game_end_time = game_start_time + timedelta(minutes=15)
@@ -58,7 +59,8 @@ def api_user_input(request):
                     "success": True,
                     "terminalLine": "You are too late, the game has ended.",
                     "lockout": False,
-                    "lockoutDuration": 0
+                    "lockoutDuration": 0,
+                    "score": 15,
             })
 
         # Do something with the input and get a response text line
@@ -68,7 +70,8 @@ def api_user_input(request):
             "success": True,
             "terminalLine": output,
             "lockout": True,
-            "lockoutDuration": 10
+            "lockoutDuration": 10,
+            "score": 15,
         }
 
         return JsonResponse(reply_data)

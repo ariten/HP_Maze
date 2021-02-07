@@ -43,8 +43,13 @@ h5 {
     /* border-bottom: 2px solid black; */
 }
 
+#scoreBox {
+    margin-left: 0.3em;
+    padding-top: 5px;
+}
+
 #terminalBottomBar {
-    padding: 0px 0px 5px 10px;
+    padding: 0px 10px 5px 10px;
     border-radius: inherit;
 }
 
