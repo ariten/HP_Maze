@@ -2,9 +2,8 @@ import pickle
 import re
 
 from datetime import datetime, timedelta
-from MazeGenerator import Maze
-from MazeRunner import MazeRunner
-
+from maze_handler.MazeGenerator import Maze
+from maze_handler.MazeRunner import MazeRunner
 
 SECRET_SPELL = "PERICULUM"
 
@@ -27,6 +26,10 @@ class MazeHandler:
         self.timeouts = {}
         self.escaped_teams = []
         self.team_answered_questions = {}
+
+        print(self.maze)
+        self.maze.write_svg("output_maze.svg")
+
 
     def game_over(self):
         trapped_teams = []
@@ -142,7 +145,7 @@ class MazeHandler:
         self.team_locations.update({team: location})
 
     def end_node(self, prev_path, options):
-        return {"info": "You have found the end of the maze! This is the path you followed:<br>"+str(prev_path)+"<br>Would you like to leave with 'Exit', or keep exploring?<br>"+str(['Exit']+options), "score": 0, "timout": 0}
+        return {"info": "You have found the end of the maze! This is the path you followed:<br>"+str(prev_path)+"<br>Would you like to leave with 'Exit', or keep exploring?<br>"+str(['Exit']+options), "score": 0, "timeout": 0}
 
     def question(self, team, location, prev_path, options):
         if location.get_coordinates() in self.team_answered_questions[team]:

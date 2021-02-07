@@ -18,6 +18,7 @@ $(document).ready(function(){
 function submitUserInput() {
     const userInput = $("#userTextInput").val()
     console.log("Input: " + userInput)
+    $("#terminalOutputBox").append("<br>> " + userInput)
     $.post("/userinput", {"userInput": userInput}, function (data) {
         if (data.success) {
             $("#terminalOutputBox").append("<br>" + data.terminalLine)

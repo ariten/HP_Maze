@@ -3,8 +3,11 @@ from datetime import datetime, timedelta
 from django.shortcuts import redirect, render
 from django.http import JsonResponse
 from .models import GameStart, Team
+from maze_handler.MazeHandler import MazeHandler
 
 DEBUG = True
+
+MAZE_HANDLER = MazeHandler(nx=10, ny=10)
 
 def index(request):
     """The page the user sees when they load the site."""
@@ -41,6 +44,10 @@ def api_register_team(request):
         team_name = request.POST.get("userSelection", "")
         print("User selected team %s" % team_name)
         request.session["user_id"] = team_name
+
+        # Register the team with the maze handler
+        MAZE_HANDLER.register_team(team_name)
+
         return JsonResponse({"success": True, "teamName": request.session["user_id"]})
     return JsonResponse({"success": False})
 
@@ -77,19 +84,21 @@ def api_user_input(request):
             })
 
         # Pass the user input to the maze code and get back assorted info
-        # ... = maze_handler.process_user_input(user_id, user_input)
-        # SIMULATED OUTPUT OF MAZE CODE
-        output = "Example output line, " + user_input
-        score_change = 50
-        lockout = False
-        duration = 7
-        # End of simulated output
+        results = MAZE_HANDLER.process_input(user_id, user_input)
+        print("--- RESULTS ---")
+        print(results)
+        print("--- END OF RESULTS ---")
+        output = results["info"]
+        score_change = results["score"]
+        duration = results["timeout"]
+        lockout = duration != 0
+        print("SCORE CHANGE: " + str(score_change))
 
         # Update the team score based on the returned delta
         if score_change > 0 and score_change < 1:
             team.score = int(team.score * score_change)
             team.save()
-        if score_change >= 1:
+        if score_change >= 1 or score_change < 0:
             team.score += score_change
             team.save()
 
