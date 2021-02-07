@@ -90,8 +90,7 @@ class MazeHandler:
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
 
-        return 0  # starting score
-        # self.set_score(team, 0)
+        return {"info": "Team "+team+" registered.", "score": 0, "timeout": 0}
 
     def move_player(self, direction, team):
         location = self.get_location(team)
@@ -107,18 +106,12 @@ class MazeHandler:
             info_string = self.question(team, self.get_location(team))
             return info_string # TODO: options for after the question is answered
         if code == 2:
-            info_string = self.deadend(team) # returns current position instead of deadend?
-            print(response)
-            return info_string # TODO: options for turning back
+            return self.deadend(*response[2:])
         if code == 1:
-            print(response)
-            print(response[1])
-            return self.junction(response[3])
-        if code == 0:
-            return "Invalid move, there is a wall in the way.", False, 0
+            return self.junction(*response[2:])
 
-        # TODO: return past moves and current options
-        return {"info": "Move processed (TODO: details)", "score": 0, "timeout": 0}
+        # code == 0
+        return {"info": "Invalid move, there is a wall in the way.", "score": 0, "timeout": 0}
 
     def set_location(self, location, team):
         self.team_locations.update({team: location})
@@ -143,10 +136,10 @@ class MazeHandler:
             # TODO: add options
             return {"info": "Wrong answer, 10 second time penalty. Which way do you want to go?<br>", "score": 0, "timeout": 10}
 
-    def junction(self, options):
-        return {"info": "You have reached a junction. Which way do you want to go?<br>"+str(options), "score": 0, "timeout": 0}
+    def junction(self, prev_path, options):
+        info = "Taking these steps along a corridor have brought you to a junction:<br>"+str(prev_path)+"<br>Which way do you want to go?<br>"+str(options)
+        return {"info": info, "score": 0, "timeout": 0}
 
-    def deadend(self, team):
-        # TODO add return direction
-        return {"info": "You have reached a dead end.<br>Turn back:", "score": 0, "timeout": 0}
+    def deadend(self, prev_path, options):
+        return {"info": "Following this path, you have reached a dead end:<br>"+str(prev_path)+"<br>Turn back: "+str(options), "score": 0, "timeout": 0}
 
