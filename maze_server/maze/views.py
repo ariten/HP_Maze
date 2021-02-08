@@ -83,6 +83,19 @@ def api_user_input(request):
                     "score": team.score,
             })
 
+            # Check to see if the user is leaving early, and block if time is too close to end of game
+            if user_input.lower() == "periculum":
+                game_end_time = game_start_time + timedelta(minutes=13, seconds=30)
+                if datetime.now() > game_end_time:
+                    return JsonResponse({
+                        "success": True,
+                        "terminalLine": "It is too late to escape with the Periculum spell, you will need to find the exit.",
+                        "lockout": False,
+                        "lockoutDuration": 0,
+                        "score": team.score,
+                })
+
+
         # Pass the user input to the maze code and get back assorted info
         results = MAZE_HANDLER.process_input(user_id, user_input)
         print("--- RESULTS ---")
