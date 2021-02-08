@@ -2,8 +2,8 @@ import pickle
 import re
 
 from datetime import datetime, timedelta
-from maze_handler.MazeGenerator import Maze
-from maze_handler.MazeRunner import MazeRunner
+from maze_server.maze_handler.MazeGenerator import Maze
+from maze_server.maze_handler.MazeRunner import MazeRunner
 
 SECRET_SPELL = "PERICULUM"
 
@@ -27,7 +27,6 @@ class MazeHandler:
         self.escaped_teams = []
         self.team_answered_questions = {}
 
-        print(self.maze)
         self.maze.write_svg("output_maze.svg")
 
 

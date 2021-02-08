@@ -170,6 +170,9 @@ class Maze:
                     if self.cell_at(x, y).state == 2:
                         x1, y1, r = x * scx + scx / 2, y * scy + scy / 2, min(scx / 2.5, scy / 2.5)
                         write_circle(f, x1, y1, r, color='Green')
+                    if self.cell_at(x, y).state == 3:
+                        x1, y1, r = x * scx + scx / 2, y * scy + scy / 2, min(scx / 2.5, scy / 2.5)
+                        write_circle(f, x1, y1, r, color='Blue')
             # Draw the North and West maze border, which won't have been drawn
             # by the procedure above.
             print('<line x1="0" y1="0" x2="{}" y2="0"/>'.format(width), file=f)
@@ -217,7 +220,7 @@ class Maze:
             nv += 1
         self.cell_at(random.randint(self.nx%10, self.nx-1), random.randint(self.ny%10, self.ny-1)).change_state(2)
 
-        nr_qas = 5
+        nr_qas = 10
         question_and_answers = self.get_question_selection(nr_qas)
 
         for x in range(nr_qas):
@@ -236,7 +239,7 @@ class Maze:
         try: return self.qa_lookup[(location.x, location.y)]['A']
         except KeyError: return "ERROR: Incorrect location, not a question node."
 
-    def get_question_selection(self, n=5, qa_filename="maze_handler/questions_and_answers.csv"):
+    def get_question_selection(self, n=5, qa_filename="questions_and_answers.csv"):
         """n: number of question nodes"""
         with open(qa_filename, 'r') as f:
             nr_qas = len(f.readlines())
