@@ -4,10 +4,12 @@ from django.shortcuts import redirect, render
 from django.http import JsonResponse
 from .models import GameStart, Team
 from maze_handler.MazeHandler import MazeHandler
+from side_challenge_handler.SideHandler import SideHandler
 
 DEBUG = True
 
 MAZE_HANDLER = MazeHandler(nx=10, ny=10)
+SIDE_HANDLER = SideHandler()
 
 def index(request):
     """The page the user sees when they load the site."""

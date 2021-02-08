@@ -2,8 +2,8 @@ import pickle
 import re
 
 from datetime import datetime, timedelta
-from maze_server.maze_handler.MazeGenerator import Maze
-from maze_server.maze_handler.MazeRunner import MazeRunner
+from maze_handler.MazeGenerator import Maze
+from maze_handler.MazeRunner import MazeRunner
 
 SECRET_SPELL = "PERICULUM"
 
