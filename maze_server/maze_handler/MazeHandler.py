@@ -12,13 +12,14 @@ class MazeHandler:
     def __init__(self, nx=50, ny=50, load_maze_file=None, save_maze_file=None):
         ix, iy = 0, 0  # Maze entry position
 
-        if not load_maze_file==None:  # load pre-generated maze
+        if load_maze_file is not None:  # load pre-generated maze
+            print(load_maze_file)
             self.maze = pickle.load(open(load_maze_file, "rb"))
         else:  # generate maze
             self.maze = Maze(nx, ny, ix, iy)
             self.maze.make_maze()
 
-        if not save_maze_file==None:  # save maze
+        if save_maze_file is not None:  # save maze
             pickle.dump(self.maze, open(save_maze_file, "wb"))
 
         self.maze_runner = MazeRunner(self.get_maze())
@@ -28,7 +29,6 @@ class MazeHandler:
         self.team_answered_questions = {}
 
         self.maze.write_svg("output_maze.svg")
-
 
     def game_over(self):
         trapped_teams = []
@@ -40,7 +40,8 @@ class MazeHandler:
     def get_start_options(self):
         start_location = self.maze.cell_at(self.maze.ix, self.maze.iy)
         options = start_location.no_wall_directions()
-        return {"info": "You have entered the maze. You can move in these directions:"+str(options), "score": 0, "timeout": 0}
+        return {"info": "You have entered the maze. You can move in these directions:" + str(options), "score": 0,
+                "timeout": 0}
 
     def process_input(self, team, input):
         input_formatted = re.sub('[\W_]', '', input.upper())
@@ -108,13 +109,14 @@ class MazeHandler:
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
         self.team_answered_questions[team] = set()
-        return {"info": "Team "+team+" registered.", "score": 0, "timeout": 0}
+        return {"info": "Team " + team + " registered.", "score": 0, "timeout": 0}
 
     def move_player(self, direction, team):
         location = self.get_location(team)
         response = self.maze_runner.run_direction(location, direction)
 
-        if location.state == 1 and not location.get_coordinates() in self.team_answered_questions[team]:  # unanswered question node
+        if location.state == 1 and not location.get_coordinates() in self.team_answered_questions[
+            team]:  # unanswered question node
             return {"info": "You have to answer the question before moving.", "score": -1, "timeout": 0}
 
         code = response[0]
@@ -137,13 +139,17 @@ class MazeHandler:
         self.team_locations.update({team: location})
 
     def end_node(self, prev_path, options):
-        return {"info": "You have found the end of the maze! This is the path you followed:<br>"+str(prev_path)+"<br>Would you like to leave with 'Exit', or keep exploring?<br>"+str(['Exit']+options), "score": 0, "timeout": 0}
+        return {"info": "You have found the end of the maze! This is the path you followed:<br>" + str(
+            prev_path) + "<br>Would you like to leave with 'Exit', or keep exploring?<br>" + str(['Exit'] + options),
+                "score": 0, "timeout": 0}
 
     def question(self, team, location, prev_path, options):
         if location.get_coordinates() in self.team_answered_questions[team]:
-            info = "You have reached a question node that you have already answered by this path:<br>"+str(prev_path)+"<br>Where would you like to go next? "+str(options)
+            info = "You have reached a question node that you have already answered by this path:<br>" + str(
+                prev_path) + "<br>Where would you like to go next? " + str(options)
         else:
-            info = "Taking these steps along a corridor have brought you to a question node. To continue, answer this question:<br>"+str(prev_path)+"<br>"+self.maze.get_cell_question(location)
+            info = "Taking these steps along a corridor have brought you to a question node. To continue, answer this question:<br>" + str(
+                prev_path) + "<br>" + self.maze.get_cell_question(location)
 
         return {"info": info, "score": 0, "timeout": 0}
 
@@ -153,20 +159,25 @@ class MazeHandler:
         options = location.no_wall_directions()
 
         if coordinates in self.team_answered_questions[team]:
-            info = "You have already answered this question.<br>Where would you like to go next? "+str(options)
+            info = "You have already answered this question.<br>Where would you like to go next? " + str(options)
             return {"info": info, "score": 0, "timeout": 0}
         else:
             self.team_answered_questions[team].add(location.get_coordinates())
             answer_formatted = re.sub('[\W_]', '', answer.lower())
 
             if answer_formatted in self.maze.get_cell_answer(location):
-                return {"info": "Correct answer. Which way do you want to go next?<br>"+str(options), "score": 50, "timeout": 0}
+                return {"info": "Correct answer. Which way do you want to go next?<br>" + str(options), "score": 50,
+                        "timeout": 0}
             else:
-                return {"info": "Wrong answer, 10 second time penalty. Which way do you want to go next?<br>"+str(options), "score": 0, "timeout": 10}
+                return {"info": "Wrong answer, 10 second time penalty. Which way do you want to go next?<br>" + str(
+                    options), "score": 0, "timeout": 10}
 
     def junction(self, prev_path, options):
-        info = "Taking these steps along a corridor have brought you to a junction:<br>"+str(prev_path)+"<br>Which way do you want to go?<br>"+str(options)
+        info = "Taking these steps along a corridor have brought you to a junction:<br>" + str(
+            prev_path) + "<br>Which way do you want to go?<br>" + str(options)
         return {"info": info, "score": 0, "timeout": 0}
 
     def deadend(self, prev_path, options):
-        return {"info": "Following this path, you have reached a dead end:<br>"+str(prev_path)+"<br>Turn back: "+str(options), "score": 0, "timeout": 0}
+        return {
+            "info": "Following this path, you have reached a dead end:<br>" + str(prev_path) + "<br>Turn back: " + str(
+                options), "score": 0, "timeout": 0}

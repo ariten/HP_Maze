@@ -34,8 +34,7 @@ class SideHandler:
             elif self.question_4(answer):
                 self.question_4_teams.append(team)
                 return ["Success", '2p894des.JPG', 100]  # Top Right
-        else:
-            return ['Incorrect', '', 0]
+        return ['Incorrect', '', 0]
 
     def question_1(self, answer):
         actual_answer = 'rubeus hagrid'

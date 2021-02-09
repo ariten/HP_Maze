@@ -8,7 +8,7 @@ from side_challenge_handler.SideHandler import SideHandler
 
 DEBUG = True
 
-MAZE_HANDLER = MazeHandler(nx=10, ny=10)
+MAZE_HANDLER = MazeHandler(nx=10, ny=10, load_maze_file='Friday_maze.mz')
 SIDE_HANDLER = SideHandler()
 
 def index(request):
