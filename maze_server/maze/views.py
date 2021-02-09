@@ -147,6 +147,31 @@ def api_time_until_start(request):
             return JsonResponse({"gameStarted": True, "duration": timer_remaining})
 
 
+def api_submit_side_challenge(request):
+    """Check to see if the submitted answer is correct, and update the team's score if it is."""
+    if request.is_ajax() and request.method == 'POST':
+        user_input = request.POST.get("userInput", "")
+        question_num = int(request.POST.get("question", "0"))
+        user_id = request.session["user_id"]
+
+        stuff = SIDE_HANDLER.handle(question_num, user_input, user_id)
+        print(stuff)
+        correct, image_name, score_change = stuff
+        
+        if correct == "Success":
+            # Update the team's score if the change is not zero
+            # Score stuff
+
+            return render(request, 'maze/sc_success.html', {"image_path": 'maze/img/' + image_name, "user_input": user_input})
+        else:
+            print("Returning failure template")
+            test = render(request, 'maze/sc_failure.html', {"user_input": user_input})
+            print(test)
+            return test
+
+
+
+
 def test_json_call(request):
     """Used to test a vertical slice of the stack."""
     print(request)
