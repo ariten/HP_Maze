@@ -3,31 +3,56 @@
 
 {% block title %}Side Challenges{% endblock %}
 
-{% block css %}<link rel="stylesheet" href="{% static 'maze/css/style.css' %}">{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'maze/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'maze/css/page_sc.css' %}">
+{% endblock %}
 
 {% block content %}
-<h2 class="text-center mb-2">Harry Potter Maze Quiz - Side Challenges</h2>
+
+<h2 class="text-center mb-2">Side Challenges</h2>
 <h5 class="text-center mb-5">Playing as team {{ user_id }}</h5>
 
-<h3>Decrypt the string <br> ehorhf untevq</h3>
-<input type="text" id="userTextInputSC1">
-<button onclick="submitAnswer(1)">Submit</button>
-<div id="scResult1"></div>
+<div class="row">
+    <div class="col-md-8">
+        {% comment %} Questions go here {% endcomment %}
+        <p class="scPrompt">Decrypt the string: <span class="scText">ehorhf untevq</span></p>
 
-<h3>Decrypt the string <br> 01000011 01110010 01101111 01101111 01101011 01110011 01101000 01100001 01101110 01101011 01110011</h3>
-<input type="text" id="userTextInputSC2">
-<button onclick="submitAnswer(2)">Submit</button>
-<div id="scResult2"></div>
+        <div class="input-group">
+            <input type="text" class="form-control" id="userTextInputSC1" placeholder="Enter your answer here..." autocomplete="off" data-lpignore="true">
+            <button class="btn btn-secondary" type="button" onclick="submitAnswer(1)">Submit</button>
+        </div>
+        <div id="scResult1" class="mb-3"></div>
 
-<h3>Decrypt the string <br> nebgnuczla</h3>
-<input type="text" id="userTextInputSC3">
-<button onclick="submitAnswer(3)">Submit</button>
-<div id="scResult3"></div>
+        <h4>Decrypt the string:</h4>
+        <p class="sideChallengeText">01000011 01110010 01101111 01101111 01101011 01110011 01101000 01100001 01101110 01101011 01110011</p>
 
-<h3>Decrypt the string <br> cuieyqgecfoy <br> Now this one is a hard one, the key is located near one of the horcrux's</h3>
-<input type="text" id="userTextInputSC4">
-<button onclick="submitAnswer(4)">Submit</button>
-<div id="scResult4"></div>
+        <input type="text" id="userTextInputSC2">
+        <button onclick="submitAnswer(2)">Submit</button>
+        <div id="scResult2"></div>
+
+        <h4>Decrypt the string:</h4>
+        <p class="sideChallengeText">nebgnuczla</p>
+
+        <input type="text" id="userTextInputSC3">
+        <button onclick="submitAnswer(3)">Submit</button>
+        <div id="scResult3"></div>
+
+        <h4>Decrypt the string:</h4>
+        <p class="sideChallengeText">cuieyqgecfoy</p>
+        <h4>Now this one is a hard one, the key is located near one of the horcrux's</h4>
+
+        <input type="text" id="userTextInputSC4">
+        <button onclick="submitAnswer(4)">Submit</button>
+        <div id="scResult4"></div>
+    </div>
+
+    <div id="mazeGrid" class="col-md-4">
+        {% comment %} Maze grid goes here {% endcomment %}
+        <img id="mazeGridSquare1" class="mazeGridSquare" src="{% static "maze/img/mazesquare.jpg" %}"><img id="mazeGridSquare3" class="mazeGridSquare" src="{% static "maze/img/mazesquare.jpg" %}"><img id="mazeGridSquare2" class="mazeGridSquare" src="{% static "maze/img/mazesquare.jpg" %}"><img id="mazeGridSquare4" class="mazeGridSquare" src="{% static "maze/img/mazesquare.jpg" %}">
+    </div>
+</div>
+
 {% endblock %}
 
 {% block hints %}

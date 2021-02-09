@@ -14,7 +14,12 @@ function submitAnswer(question_num) {
             "question": question_num,
         },
         function (data) {
-            $('#scResult' + question_num).html(data)
+            
+            $('#scResult' + question_num).html(data.message)
+
+            if (data.correct) {
+                $('#mazeGridSquare' + question_num).attr('src', data.imagePath)
+            }
         }
     )
 }

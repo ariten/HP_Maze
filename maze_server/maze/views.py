@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from .models import GameStart, Team
 from maze_handler.MazeHandler import MazeHandler
 from side_challenge_handler.SideHandler import SideHandler
+from django.templatetags.static import static
 
 DEBUG = True
 
@@ -162,7 +163,19 @@ def api_submit_side_challenge(request):
             # Update the team's score if the change is not zero
             # Score stuff
 
-            return render(request, 'maze/sc_success.html', {"image_path": 'maze/img/' + image_name, "user_input": user_input})
+            message = user_input + " was the correct answer, 100 score has been added to your team."
+            image_path = static('maze/img/' + image_name)
+            print(image_path)
+
+            reply_data = {
+                "correct": True,
+                "message": message,
+                "imagePath": image_path,
+            }
+
+            return JsonResponse(reply_data)
+
+            # return render(request, 'maze/sc_success.html', {"image_path": 'maze/img/' + image_name, "user_input": user_input})
         else:
             print("Returning failure template")
             test = render(request, 'maze/sc_failure.html', {"user_input": user_input})
