@@ -159,12 +159,16 @@ def api_submit_side_challenge(request):
         stuff = SIDE_HANDLER.handle(question_num, user_input, user_id)
         print(stuff)
         correct, image_name, score_change = stuff
+
+        team = Team.objects.get(team_name=user_id)
         
         if correct == "Success":
             # Update the team's score if the change is not zero
             # Score stuff
+            team.score += score_change
+            team.save()
 
-            message = '"%s" was the correct answer, 100 score has been added to your team.' % user_input
+            message = '"%s" was the correct answer, %s score has been added to your team.' % (user_input, score_change)
             image_path = static('maze/img/' + image_name)
             print(image_path)
 
@@ -172,6 +176,7 @@ def api_submit_side_challenge(request):
                 "correct": True,
                 "message": message,
                 "imagePath": image_path,
+                "score": team.score,
             }
 
             return JsonResponse(reply_data)
@@ -180,7 +185,8 @@ def api_submit_side_challenge(request):
 
             reply_data = {
                 "correct": False,
-                "message": message
+                "message": message,
+                "score": team.score,
             }
 
             return JsonResponse(reply_data)

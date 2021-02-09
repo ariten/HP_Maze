@@ -16,6 +16,7 @@ function submitAnswer(question_num) {
         function (data) {
             
             $('#scResult' + question_num).html(data.message)
+            $('#scoreBox').text(data.score)
 
             if (data.correct) {
                 $('#mazeGridSquare' + question_num).attr('src', data.imagePath)
