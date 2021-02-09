@@ -13,6 +13,17 @@ class SideHandler:
         self.question_3_hints = []
         self.question_4_hints = []
 
+    def hint_handler(self, question, team):
+        if question == 1:
+            return self.hint_question_1(team)
+        elif question == 2:
+            return self.hint_question_2(team)
+        elif question == 3:
+            return self.hint_question_3(team)
+        elif question == 4:
+            return self.hint_question_4(team)
+        else:
+            return "Invalid Hint"
 
     def handle(self, question, answer, team):
         if question == 1:
