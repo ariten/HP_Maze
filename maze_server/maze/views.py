@@ -164,7 +164,11 @@ def api_submit_side_challenge(request):
             # Update the team's score if the change is not zero
             # Score stuff
 
-            message = '"%s" was the correct answer, 100 score has been added to your team.' % user_input
+            if score_change == 0:
+                message = "You have already answered Question %s" % question_num
+            else:
+                message = '"%s" was the correct answer, %s score has been added to your team.' % (user_input, score_change)
+
             image_path = static('maze/img/' + image_name)
             print(image_path)
 
