@@ -163,7 +163,7 @@ def api_submit_side_challenge(request):
             # Update the team's score if the change is not zero
             # Score stuff
 
-            message = user_input + " was the correct answer, 100 score has been added to your team."
+            message = '"%s" was the correct answer, 100 score has been added to your team.' % user_input
             image_path = static('maze/img/' + image_name)
             print(image_path)
 
@@ -174,13 +174,15 @@ def api_submit_side_challenge(request):
             }
 
             return JsonResponse(reply_data)
-
-            # return render(request, 'maze/sc_success.html', {"image_path": 'maze/img/' + image_name, "user_input": user_input})
         else:
-            print("Returning failure template")
-            test = render(request, 'maze/sc_failure.html', {"user_input": user_input})
-            print(test)
-            return test
+            message = '"%s" was the wrong answer, sorry.' % user_input
+
+            reply_data = {
+                "correct": False,
+                "message": message
+            }
+
+            return JsonResponse(reply_data)
 
 
 

@@ -22,29 +22,33 @@
             <input type="text" class="form-control" id="userTextInputSC1" placeholder="Enter your answer here..." autocomplete="off" data-lpignore="true">
             <button class="btn btn-secondary" type="button" onclick="submitAnswer(1)">Submit</button>
         </div>
-        <div id="scResult1" class="mb-3"></div>
+        <div id="scResult1" class="mb-4"></div>
 
-        <h4>Decrypt the string:</h4>
-        <p class="sideChallengeText">01000011 01110010 01101111 01101111 01101011 01110011 01101000 01100001 01101110 01101011 01110011</p>
 
-        <input type="text" id="userTextInputSC2">
-        <button onclick="submitAnswer(2)">Submit</button>
-        <div id="scResult2"></div>
+        <p class="scPrompt">Decrypt the string: <span class="scText">01000011 01110010 01101111 01101111 01101011 01110011 01101000 01100001 01101110 01101011 01110011</span></p>
 
-        <h4>Decrypt the string:</h4>
-        <p class="sideChallengeText">nebgnuczla</p>
+        <div class="input-group">
+            <input type="text" class="form-control" id="userTextInputSC2" placeholder="Enter your answer here..." autocomplete="off" data-lpignore="true">
+            <button class="btn btn-secondary" type="button" onclick="submitAnswer(2)">Submit</button>
+        </div>
+        <div id="scResult2" class="mb-4"></div>
 
-        <input type="text" id="userTextInputSC3">
-        <button onclick="submitAnswer(3)">Submit</button>
-        <div id="scResult3"></div>
 
-        <h4>Decrypt the string:</h4>
-        <p class="sideChallengeText">cuieyqgecfoy</p>
-        <h4>Now this one is a hard one, the key is located near one of the horcrux's</h4>
+        <p class="scPrompt">Decrypt the string: <span class="scText">nebgnuczla</span></p>
 
-        <input type="text" id="userTextInputSC4">
-        <button onclick="submitAnswer(4)">Submit</button>
-        <div id="scResult4"></div>
+        <div class="input-group">
+            <input type="text" class="form-control" id="userTextInputSC3" placeholder="Enter your answer here..." autocomplete="off" data-lpignore="true">
+            <button class="btn btn-secondary" type="button" onclick="submitAnswer(3)">Submit</button>
+        </div>
+        <div id="scResult3" class="mb-4"></div>
+
+        <p class="scPrompt">Decrypt the string: <span class="scText">cuieyqgecfoy</span><br>Now this one is a hard one, the key is located near one of the horcrux's</p>
+
+        <div class="input-group">
+            <input type="text" class="form-control" id="userTextInputSC4" placeholder="Enter your answer here..." autocomplete="off" data-lpignore="true">
+            <button class="btn btn-secondary" type="button" onclick="submitAnswer(4)">Submit</button>
+        </div>
+        <div id="scResult4" class="mb-4"></div>
     </div>
 
     <div id="mazeGrid" class="col-md-4">
