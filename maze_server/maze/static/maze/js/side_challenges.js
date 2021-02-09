@@ -23,3 +23,16 @@ function submitAnswer(question_num) {
         }
     )
 }
+
+function submitHint(question_num) {
+    $.post(
+        "/getsidechallangehint",
+        {
+            "question":question_num,
+        },
+        function (data) {
+            $('#scHint' + question_num).html(data.message)
+        }
+    )
+
+}
