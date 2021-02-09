@@ -239,7 +239,7 @@ class Maze:
         try: return self.qa_lookup[(location.x, location.y)]['A']
         except KeyError: return "ERROR: Incorrect location, not a question node."
 
-    def get_question_selection(self, n=5, qa_filename="maze_handler/questions_and_answers.csv"):
+    def get_question_selection(self, n=5, qa_filename="questions_and_answers.csv"):
         """n: number of question nodes"""
         with open(qa_filename, 'r') as f:
             nr_qas = len(f.readlines())
