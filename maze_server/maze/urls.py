@@ -12,5 +12,6 @@ urlpatterns = [
     path('timeuntilstart', views.api_time_until_start, name='time_until_start'),
     path('sidechallenges', views.page_side_challenges, name='side_challenges'),
     path('submitsidechallenge', views.api_submit_side_challenge, name="submit_side_challenge"),
+    path('getsidechallangehint', views.api_get_hint, name='get_hints')
 ]
 

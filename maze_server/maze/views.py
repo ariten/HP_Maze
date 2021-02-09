@@ -12,6 +12,7 @@ DEBUG = True
 MAZE_HANDLER = MazeHandler(nx=10, ny=10, load_maze_file='Friday_maze.mz')
 SIDE_HANDLER = SideHandler()
 
+
 def index(request):
     """The page the user sees when they load the site."""
     # Check to see if the user has selected a team yet, if not redirect to the selection page
@@ -184,6 +185,13 @@ def api_submit_side_challenge(request):
 
             return JsonResponse(reply_data)
 
+
+def api_get_hint(request):
+    user_id = request.session["user_id"]
+    if request.is_ajax() and request.method == 'POST':
+        question_num = int(request.POST.get("question", "0"))
+        hint = SIDE_HANDLER.hint_handler(question=question_num, team=user_id)
+        return JsonResponse({"message": hint})
 
 
 
