@@ -10,8 +10,14 @@
 
 {% block content %}
 
-<h2 class="text-center mb-2">Side Challenges</h2>
-<h5 class="text-center mb-5">Playing as team {{ user_id }}. Score: <span id="scoreBox">0</span></h5>
+<div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+    <h2 class="text-center mb-2">Side Challenges</h2>
+    <div class="text-end">
+        <h5>Playing as team {{ user_id }}</h5>
+        <h5>Score: <span id="scoreBox">{{ score }}</span></h5>
+    </div>
+</div>
+
 
 <div class="row">
     <div class="col-md-8">
