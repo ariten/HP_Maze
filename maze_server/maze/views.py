@@ -225,7 +225,7 @@ def api_submit_side_challenge(request):
         game_end_time = game_start_time + timedelta(minutes=GameStart.objects.first().event_duration)
 
         if datetime.now() < game_start_time:
-            message = "The event has not started, event starts in %s." % (game_start_time - datetime.now())
+            message = "The event has not started, event starts in %s." % str(game_start_time - datetime.now()).split(".")[0]
             reply_data = {
                 "correct": False,
                 "message": message,
