@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 from django.shortcuts import redirect, render
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from .models import GameStart, Team
 from maze_handler.MazeHandler import MazeHandler
 from side_challenge_handler.SideHandler import SideHandler
@@ -40,6 +40,16 @@ def page_side_challenges(request):
     
     user_id = request.session["user_id"]
     return render(request, 'maze/side_challenges.html', {"user_id": user_id})
+
+
+def page_admin_extras(request):
+    """Return a few extra admin things."""
+    if request.user.is_staff:
+        all_teams = Team.objects.all()
+        context = {"teams": all_teams}
+        return render(request, 'maze/page_admin.html', context)
+    else:
+        return HttpResponse(status=401)
 
 
 def api_register_team(request):

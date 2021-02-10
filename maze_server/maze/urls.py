@@ -14,5 +14,6 @@ urlpatterns = [
     path('submitsidechallenge', views.api_submit_side_challenge, name="submit_side_challenge"),
     path('getsidechallangehint', views.api_get_hint, name='get_hints'),
     path('getgamestartinfo', views.api_get_game_start_info, name='get_game_start_info'),
+    path('adminextras', views.page_admin_extras, name='admin_extras'),
 ]
 
