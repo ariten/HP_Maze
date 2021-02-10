@@ -13,7 +13,7 @@
         Admin Page
 
         {% for team in teams %}
-        <p>{{ team.team_name }} - score: {{ team.score }}</p>
+        <p>{{ team.team_name }} - score: {{ team.score }} - side challenges: {{ sides.team.team_name }} - Question Nodes: {{ mazes.team.team_name }}</p>
         {% endfor %}
     </div>
     
