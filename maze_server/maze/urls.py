@@ -15,5 +15,6 @@ urlpatterns = [
     path('getsidechallangehint', views.api_get_hint, name='get_hints'),
     path('getgamestartinfo', views.api_get_game_start_info, name='get_game_start_info'),
     path('adminextras', views.page_admin_extras, name='admin_extras'),
+    path('adminendgame', views.api_admin_end_game, name='admin_end_game'),
 ]
 

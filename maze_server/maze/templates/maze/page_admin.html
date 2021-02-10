@@ -12,10 +12,16 @@
 
         Admin Page
 
+        <button class="btn btn-danger" onclick="endGame()">END GAME</button>
+
         {% for team in teams %}
         <p>{{ team.team_name }} - score: {{ team.score }}</p>
         {% endfor %}
     </div>
+
+    {% load static %}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{% static 'maze/js/admin.js' %}"></script>
     
 </body>
 </html>

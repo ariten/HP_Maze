@@ -52,6 +52,21 @@ def page_admin_extras(request):
         return HttpResponse(status=401)
 
 
+def api_admin_end_game(request):
+    if request.user.is_staff:
+        if request.is_ajax() and request.method == 'GET':
+            # End the game by getting the trapped teams and halving their scores
+            trapped_teams = MAZE_HANDLER.game_over()
+            for team_name in trapped_teams:
+                team = Team.objects.get(team_name=team_name)
+                team.score = int(team.score / 2)
+                team.save()
+
+            return JsonResponse({"success": True, "numTrapped": len(trapped_teams)})
+    else:
+        return HttpResponse(status=401)
+
+
 def api_register_team(request):
     """Takes the user's input of team name and stores it in the session as the user's unique ID."""
     if request.is_ajax() and request.method == 'POST':
