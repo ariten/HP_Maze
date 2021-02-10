@@ -82,7 +82,7 @@ class MazeHandler:
 
     def try_spell_escape(self, team, spell):
         self.escaped_teams.append(team)
-        return {"info": "You have used a spell to escape!", "score": -0.25, "timeout": 0}
+        return {"info": "You have used a spell to escape!", "score": 0.75, "timeout": 0}
 
     def get_location(self, team):
         return self.maze.cell_at(*self.team_locations[team])
