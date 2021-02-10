@@ -1,0 +1,38 @@
+{% extends "maze/base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'maze/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'maze/css/page_main.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+    <h2 class="text-center mb-2">Harry Potter Maze Quiz</h2>
+    <div class="text-end">
+        <h5>Playing as team {{ user_id }}</h5>
+        <h5><a href="/sidechallenges">Side Challenges</a></h5>
+    </div>
+</div>
+
+
+<div class="vertical-center">
+    <div id="terminalBox" class="shadow-lg">
+        <p id="terminalOutputBox" class="noscrollbar mb-0">Welcome to the maze.</p>
+        <div id="terminalBottomBar" class="d-flex">
+            <span>></span>
+            <input type="text" id="userTextInput" class="flex-grow-1" autocomplete="off" data-lpignore="true" autofocus placeholder="Type your action here...">
+            <div id="scoreBox">
+                Score: {{ score }}
+            </div>
+        </div>
+        <div id="lockoutOverlay" class="position-absolute top-0 start-0 d-flex justify-content-center align-items-center">
+            <p id="lockoutTimer">timer</p>
+        </div>
+    </div>
+</div>
+
+<div id="mainTimerBox" class="text-center mt-3">🙥 <span id="mainTimer">00:00</span> 🙧</div>
+{% endblock %}
+
+{% block js %}<script src="{% static 'maze/js/app.js' %}"></script>{% endblock %}
