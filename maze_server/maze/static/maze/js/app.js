@@ -10,15 +10,30 @@ $(document).ready(function(){
             if (!data.gameStarted) {
                 console.log("Game starts in " + data.duration + " seconds, locking terminal")
                 lockoutTerminal(data.duration)
+
+                setTimeout(function () {
+                    $.getJSON(
+                        '/getgamestartinfo',
+                        function (data) {
+                            $("#terminalOutputBox").append("<br>" + data.message)
+                            startMainTimer(data.duration)
+                        }
+                    )
+                }, (data.duration * 1000))
+
             } else {
                 if (data.duration > 0) {
-                    display = document.querySelector('#mainTimer')
-                    startTimer(data.duration, display)
+                    startMainTimer(data.duration)
                 }
             }
         }
     )
 })
+
+function startMainTimer(duration) {
+    display = document.querySelector('#mainTimer')
+    startTimer(duration, display)
+}
 
 function submitUserInput() {
     const userInput = $("#userTextInput").val()
@@ -82,7 +97,7 @@ function startTimer(duration, display) {
     };
     // we don't want to wait a full second before the timer starts
     timer();
-    x = setInterval(timer, 1000);
+    var x = setInterval(timer, 1000);
 }
 
 $('#userTextInput').on('keypress', function (e) {

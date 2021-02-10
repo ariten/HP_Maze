@@ -149,6 +149,18 @@ def api_time_until_start(request):
             return JsonResponse({"gameStarted": True, "duration": timer_remaining})
 
 
+def api_get_game_start_info(request):
+    """Return the initial game message and time remaining in the game."""
+    if request.is_ajax() and request.method == 'GET':
+        game_start_time = GameStart.objects.first().start_time.replace(tzinfo=None)
+        time_remaining = game_start_time - datetime.now()
+        timer_remaining = max(int((timedelta(minutes=15) + time_remaining).total_seconds()), 0)
+
+        message = MAZE_HANDLER.get_start_options()["info"]
+
+        return JsonResponse({"message": message, "duration": timer_remaining})
+
+
 def api_submit_side_challenge(request):
     """Check to see if the submitted answer is correct, and update the team's score if it is."""
     if request.is_ajax() and request.method == 'POST':
