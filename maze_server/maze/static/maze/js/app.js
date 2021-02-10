@@ -61,6 +61,7 @@ function submitUserInput() {
 
 function lockoutTerminal(duration) {
     $('#userTextInput').prop("disabled", true)
+    $('#userTextInput').css("background-color", "#791212")
     $('#lockoutOverlay').css("visibility", "visible")
     $('#terminalBottomBar').css("background-color", "#791212")
     display = document.querySelector('#lockoutTimer');
@@ -68,6 +69,7 @@ function lockoutTerminal(duration) {
     setTimeout(function () {
         $('#userTextInput').prop("disabled", false)
         $('#userTextInput').focus()
+        $('#userTextInput').css("background-color", "#4d4d4d")
         $('#terminalBottomBar').css("background-color", "#4d4d4d")
         $('#lockoutOverlay').css("visibility", "hidden")
     }, duration * 1000)
