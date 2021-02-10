@@ -30,7 +30,7 @@ class MazeHandler:
         self.stats = {}
         self.maze.write_svg("output_maze.svg")
 
-    def game_over_stats(self):
+    def get_stats(self):
         return self.stats
 
     def game_over(self):
@@ -111,6 +111,7 @@ class MazeHandler:
 
     def register_team(self, team):
         self.team_locations.update({team: self.maze.get_start_coords()})
+        self.stats.update({team: 0})
         self.team_answered_questions[team] = set()
         return {"info": "Team " + team + " registered.", "score": 0, "timeout": 0}
 
@@ -169,10 +170,7 @@ class MazeHandler:
             answer_formatted = re.sub('[\W_]', '', answer.lower())
 
             if answer_formatted in self.maze.get_cell_answer(location):
-                if team in self.stats:
-                    self.stats.update({team: self.stats[team] + 1})
-                else:
-                    self.stats.update({team: 0})
+                self.stats.update({team: self.stats[team] + 1})
                 return {"info": "Correct answer. Which way do you want to go next?<br>" + str(options), "score": 50,
                         "timeout": 0}
             else:

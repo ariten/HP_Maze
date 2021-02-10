@@ -46,7 +46,12 @@ def page_admin_extras(request):
     """Return a few extra admin things."""
     if request.user.is_staff:
         all_teams = Team.objects.all()
-        context = {"teams": all_teams}
+        side_challanges = SIDE_HANDLER.get_stats()
+        questions_answered = MAZE_HANDLER.get_stats()
+        combine_data = {}
+
+
+        context = {"teams": all_teams, "sides": side_challanges, "mazes": questions_answered}
         return render(request, 'maze/page_admin.html', context)
     else:
         return HttpResponse(status=401)
@@ -61,6 +66,7 @@ def api_register_team(request):
 
         # Register the team with the maze handler
         MAZE_HANDLER.register_team(team_name)
+        SIDE_HANDLER.register_team(team_name)
 
         return JsonResponse({"success": True, "teamName": request.session["user_id"]})
     return JsonResponse({"success": False})

@@ -26,6 +26,9 @@ class SideHandler:
         else:
             return "Invalid Hint"
 
+    def register_team(self, team):
+        self.stats.update({team: 0})
+
     def handle(self, question, answer, team):
         if question == 1:
             if team in self.question_1_teams:
@@ -66,10 +69,10 @@ class SideHandler:
         return ('Incorrect', '', 0)
 
     def add_stat(self, team):
-        if team in self.stats:
-            self.stats.update({team: self.stats[team] + 1})
-        else:
-            self.stats.update({team: 1})
+        self.stats.update({team: self.stats[team] + 1})
+
+    def get_stats(self):
+        return self.stats
 
     def question_1(self, answer):
         actual_answer = 'rubeus hagrid'
