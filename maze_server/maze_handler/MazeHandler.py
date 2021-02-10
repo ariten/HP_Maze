@@ -40,11 +40,13 @@ class MazeHandler:
                 trapped_teams.append(i)
         return trapped_teams
 
-    def get_start_options(self):
-        start_location = self.maze.cell_at(self.maze.ix, self.maze.iy)
+    def get_start_options(self, team):
+        if team in self.escaped_teams:
+            return "You have escaped the maze."
+
+        start_location = self.get_location(team)
         options = start_location.no_wall_directions()
-        return {"info": "You have entered the maze. You can move in these directions:" + str(options), "score": 0,
-                "timeout": 0}
+        return "You can move in these directions:" + str(options)
 
     def process_input(self, team, input):
         input_formatted = re.sub('[\W_]', '', input.upper())

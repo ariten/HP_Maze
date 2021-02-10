@@ -191,7 +191,9 @@ def api_time_until_start(request):
         if delta > 0:
             return JsonResponse({"gameStarted": False, "duration": delta})
         else:
-            return JsonResponse({"gameStarted": True, "duration": timer_remaining})
+            user_id = request.session["user_id"]
+            message = MAZE_HANDLER.get_start_options(user_id)
+            return JsonResponse({"gameStarted": True, "duration": timer_remaining, "message": message})
 
 
 def api_get_game_start_info(request):
@@ -199,9 +201,10 @@ def api_get_game_start_info(request):
     if request.is_ajax() and request.method == 'GET':
         game_start_time = GameStart.objects.first().start_time.replace(tzinfo=None)
         time_remaining = game_start_time - datetime.now()
-        timer_remaining = max(int((timedelta(minutes=15) + time_remaining).total_seconds()), 0)
+        timer_remaining = max(int((timedelta(minutes=GameStart.objects.first().event_duration) + time_remaining).total_seconds()), 0)
 
-        message = MAZE_HANDLER.get_start_options()["info"]
+        user_id = request.session["user_id"]
+        message = MAZE_HANDLER.get_start_options(user_id)
 
         return JsonResponse({"message": message, "duration": timer_remaining})
 
@@ -222,14 +225,14 @@ def api_submit_side_challenge(request):
         game_end_time = game_start_time + timedelta(minutes=GameStart.objects.first().event_duration)
 
         if datetime.now() < game_start_time:
-            message = "The event has not started, event starts in %s" % (game_start_time - datetime.now())
+            message = "The event has not started, event starts in %s." % (game_start_time - datetime.now())
             reply_data = {
                 "correct": False,
                 "message": message,
                 "score": team.score,
             }
         elif datetime.now() > game_end_time:
-            message = "The even has ended"
+            message = "The event has ended."
             reply_data = {
                 "correct": False,
                 "message": message,
@@ -243,7 +246,7 @@ def api_submit_side_challenge(request):
                 team.save()
 
                 if score_change == 0:
-                    message = "You have already answered Question %s" % question_num
+                    message = "You have already answered Question %s." % question_num
                 else:
                     message = '"%s" was the correct answer, %s score has been added to your team.' % (user_input, score_change)
 

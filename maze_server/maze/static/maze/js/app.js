@@ -22,8 +22,10 @@ $(document).ready(function(){
                 }, (data.duration * 1000))
 
             } else {
+                // Game has already begun
                 if (data.duration > 0) {
                     startMainTimer(data.duration)
+                    $("#terminalOutputBox").append("<br>" + data.message)
                 }
             }
         }
