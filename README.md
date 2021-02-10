@@ -4,11 +4,12 @@ Harry Potter Maze game for cross gov away day
 
 ### Set up
 
-`python manage.py migrate`
-
-`python manage.py createsuperuser`
-
-`python manage.py runserver`
+- `python manage.py migrate`
+- `python manage.py createsuperuser`
+- `python manage.py runserver`
+- Log into admin panel at `/admin`
+- Add a "Game starts" entry with the start date / time of the event and the duration
+- Add a "Teams" entry for each competing team
 
 
 ### Pages
