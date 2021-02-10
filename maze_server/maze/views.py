@@ -45,13 +45,26 @@ def page_side_challenges(request):
 def page_admin_extras(request):
     """Return a few extra admin things."""
     if request.user.is_staff:
-        all_teams = Team.objects.all()
-        side_challanges = SIDE_HANDLER.get_stats()
+        all_teams = Team.objects.values()
+        side_challenges = SIDE_HANDLER.get_stats()
         questions_answered = MAZE_HANDLER.get_stats()
-        combine_data = {}
 
+        for team in all_teams:
+            # Add questions answered to team data
+            if team["team_name"] in questions_answered.keys():
+                team["questions"] = questions_answered[team["team_name"]]
+            else:
+                team["questions"] = "TNR"
 
-        context = {"teams": all_teams, "sides": side_challanges, "mazes": questions_answered}
+            # Add side challenges completed to team data
+            if team["team_name"] in side_challenges.keys():
+                team["sides"] = side_challenges[team["team_name"]]
+            else:
+                team["sides"] = "TNR"
+
+        print(all_teams)
+
+        context = {"teams": all_teams}
         return render(request, 'maze/page_admin.html', context)
     else:
         return HttpResponse(status=401)
