@@ -7,7 +7,7 @@ from maze_handler.MazeHandler import MazeHandler
 from side_challenge_handler.SideHandler import SideHandler
 from django.templatetags.static import static
 
-DEBUG = True
+DEBUG = False
 
 MAZE_HANDLER = MazeHandler(nx=10, ny=10, load_maze_file='Friday_maze.mz')
 SIDE_HANDLER = SideHandler()
@@ -20,7 +20,8 @@ def index(request):
         return redirect('team_selection')
 
     user_id = request.session["user_id"]
-    return render(request, "maze/index.html", {"user_id": user_id})
+    team = Team.objects.get(team_name=user_id)
+    return render(request, "maze/index.html", {"user_id": user_id,  "score": team.score})
 
 
 def team_selection(request):
@@ -39,7 +40,9 @@ def page_side_challenges(request):
         return redirect('team_selection')
     
     user_id = request.session["user_id"]
-    return render(request, 'maze/side_challenges.html', {"user_id": user_id})
+    team = Team.objects.get(team_name=user_id)
+
+    return render(request, 'maze/side_challenges.html', {"user_id": user_id, "score": team.score})
 
 
 def page_admin_extras(request):
