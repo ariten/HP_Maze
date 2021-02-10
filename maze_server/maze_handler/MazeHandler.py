@@ -27,8 +27,11 @@ class MazeHandler:
         self.timeouts = {}
         self.escaped_teams = []
         self.team_answered_questions = {}
-
+        self.stats = {}
         self.maze.write_svg("output_maze.svg")
+
+    def game_over_stats(self):
+        return self.stats
 
     def game_over(self):
         trapped_teams = []
@@ -166,6 +169,10 @@ class MazeHandler:
             answer_formatted = re.sub('[\W_]', '', answer.lower())
 
             if answer_formatted in self.maze.get_cell_answer(location):
+                if team in self.stats:
+                    self.stats.update({team: self.stats[team] + 1})
+                else:
+                    self.stats.update({team: 0})
                 return {"info": "Correct answer. Which way do you want to go next?<br>" + str(options), "score": 50,
                         "timeout": 0}
             else:

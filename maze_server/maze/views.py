@@ -89,7 +89,8 @@ def api_user_input(request):
 
             # Check to see if the user is leaving early, and block if time is too close to end of game
             if user_input.lower() == "periculum":
-                game_end_time = game_start_time + (timedelta(minutes=GameStart.objects.first().event_duration) - timedelta(minutes=1, seconds=30))
+                game_end_time = game_start_time + (timedelta(minutes=GameStart.objects.first().event_duration) -
+                                                   timedelta(minutes=1, seconds=30))
                 if datetime.now() > game_end_time:
                     return JsonResponse({
                         "success": True,
@@ -112,7 +113,7 @@ def api_user_input(request):
         print("SCORE CHANGE: " + str(score_change))
 
         # Update the team score based on the returned delta
-        if score_change > 0 and score_change < 1:
+        if 0 < score_change < 1:
             team.score = int(team.score * score_change)
             team.save()
         if score_change >= 1 or score_change < 0:
@@ -229,7 +230,6 @@ def api_get_hint(request):
         question_num = int(request.POST.get("question", "0"))
         hint = SIDE_HANDLER.hint_handler(question=question_num, team=user_id)
         return JsonResponse({"message": hint})
-
 
 
 def test_json_call(request):

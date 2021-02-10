@@ -12,6 +12,7 @@ class SideHandler:
         self.question_2_hints = []
         self.question_3_hints = []
         self.question_4_hints = []
+        self.stats = {}
 
     def hint_handler(self, question, team):
         if question == 1:
@@ -31,6 +32,7 @@ class SideHandler:
                 return ("Success", '2p8934u5.JPG', 0)
             elif self.question_1(answer):
                 self.question_1_teams.append(team)
+                self.add_stat(team)
                 if team in self.question_1_hints:
                     return "Success", '2p8934u5.JPG', 50
                 return ("Success", '2p8934u5.JPG', 100)  # Top Left
@@ -39,6 +41,7 @@ class SideHandler:
                 return ("Success", '2p8956gc.JPG', 0)
             elif self.question_2(answer):
                 self.question_2_teams.append(team)
+                self.add_stat(team)
                 if team in self.question_2_hints:
                     return ("Success", '2p8956gc.JPG', 50)
                 return ("Success", '2p8956gc.JPG', 100)  # Bottom Left
@@ -47,6 +50,7 @@ class SideHandler:
                 return ("Success", '2p894des.JPG', 0)
             elif self.question_3(answer):
                 self.question_3_teams.append(team)
+                self.add_stat(team)
                 if team in self.question_3_hints:
                     return ("Success", '2p894des.JPG', 50)
                 return ("Success", '2p894des.JPG', 100)  # Top Right
@@ -55,10 +59,17 @@ class SideHandler:
                 return ("Success", '2p89k65c.JPG', 0)
             elif self.question_4(answer):
                 self.question_4_teams.append(team)
+                self.add_stat(team)
                 if team in self.question_4_hints:
                     return ("Success", '2p89k65c.JPG', 50)
                 return ("Success", '2p89k65c.JPG', 100)  # Top Right
         return ('Incorrect', '', 0)
+
+    def add_stat(self, team):
+        if team in self.stats:
+            self.stats.update({team: self.stats[team] + 1})
+        else:
+            self.stats.update({team: 1})
 
     def question_1(self, answer):
         actual_answer = 'rubeus hagrid'
