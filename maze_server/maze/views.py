@@ -77,7 +77,7 @@ def api_user_input(request):
                     "score": 0,
             })
 
-            game_end_time = game_start_time + timedelta(minutes=15)
+            game_end_time = game_start_time + timedelta(minutes=GameStart.objects.first().event_duration)
             if datetime.now() > game_end_time:
                 return JsonResponse({
                     "success": True,
@@ -89,7 +89,7 @@ def api_user_input(request):
 
             # Check to see if the user is leaving early, and block if time is too close to end of game
             if user_input.lower() == "periculum":
-                game_end_time = game_start_time + timedelta(minutes=13, seconds=30)
+                game_end_time = game_start_time + (timedelta(minutes=GameStart.objects.first().event_duration) - timedelta(minutes=1, seconds=30))
                 if datetime.now() > game_end_time:
                     return JsonResponse({
                         "success": True,
@@ -141,7 +141,7 @@ def api_time_until_start(request):
         delta = int(time_remaining.total_seconds())
 
         # Calculate seconds left on the 15 min timer
-        timer_remaining = max(int((timedelta(minutes=15) + time_remaining).total_seconds()), 0)
+        timer_remaining = max(int((timedelta(minutes=GameStart.objects.first().event_duration) + time_remaining).total_seconds()), 0)
 
         if delta > 0:
             return JsonResponse({"gameStarted": False, "duration": delta})
@@ -161,39 +161,54 @@ def api_submit_side_challenge(request):
         correct, image_name, score_change = stuff
 
         team = Team.objects.get(team_name=user_id)
-        
-        if correct == "Success":
-            # Update the team's score if the change is not zero
-            # Score stuff
-            team.score += score_change
-            team.save()
+        game_start_time = GameStart.objects.first().start_time.replace(tzinfo=None)
+        game_end_time = game_start_time + timedelta(minutes=GameStart.objects.first().event_duration)
 
-            if score_change == 0:
-                message = "You have already answered Question %s" % question_num
-            else:
-                message = '"%s" was the correct answer, %s score has been added to your team.' % (user_input, score_change)
-
-            image_path = static('maze/img/' + image_name)
-            print(image_path)
-
-            reply_data = {
-                "correct": True,
-                "message": message,
-                "imagePath": image_path,
-                "score": team.score,
-            }
-
-            return JsonResponse(reply_data)
-        else:
-            message = '"%s" was the wrong answer, sorry.' % user_input
-
+        if datetime.now() < game_start_time:
+            message = "The event has not started, event starts in %s" % (game_start_time - datetime.now())
             reply_data = {
                 "correct": False,
                 "message": message,
                 "score": team.score,
             }
+        elif datetime.now() > game_end_time:
+            message = "The even has ended"
+            reply_data = {
+                "correct": False,
+                "message": message,
+                "score": team.score,
+            }
+        else:
+            if correct == "Success":
+                # Update the team's score if the change is not zero
+                # Score stuff
+                team.score += score_change
+                team.save()
 
-            return JsonResponse(reply_data)
+                if score_change == 0:
+                    message = "You have already answered Question %s" % question_num
+                else:
+                    message = '"%s" was the correct answer, %s score has been added to your team.' % (user_input, score_change)
+
+                image_path = static('maze/img/' + image_name)
+                print(image_path)
+
+                reply_data = {
+                    "correct": True,
+                    "message": message,
+                    "imagePath": image_path,
+                    "score": team.score,
+                }
+            else:
+                message = '"%s" was the wrong answer, sorry.' % user_input
+
+                reply_data = {
+                    "correct": False,
+                    "message": message,
+                    "score": team.score,
+                }
+
+        return JsonResponse(reply_data)
 
 
 def api_get_hint(request):
