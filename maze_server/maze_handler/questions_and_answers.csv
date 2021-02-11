@@ -12,3 +12,4 @@
 "What attack involves the use of previously captured network traffic?","Replay attack"
 "Cyber Criminals rely on (?) error to gain access to systems","Human"
 "A small file used by a web browser to store data about the user's session?","Cookie"
+"What type of file is used by Wireshark to save network traffic","PCAP"

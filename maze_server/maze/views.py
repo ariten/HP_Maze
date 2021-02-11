@@ -141,12 +141,12 @@ def api_user_input(request):
                 if datetime.now() > game_end_time:
                     return JsonResponse({
                         "success": True,
-                        "terminalLine": "It is too late to escape with the Periculum spell, you will need to find the exit.",
+                        "terminalLine": "It is too late to escape with the Periculum spell, you will need to find the "
+                                        "exit.",
                         "lockout": False,
                         "lockoutDuration": 0,
-                        "score": team.score,
+                        "score": team.score
                 })
-
 
         # Pass the user input to the maze code and get back assorted info
         results = MAZE_HANDLER.process_input(user_id, user_input)
@@ -157,6 +157,8 @@ def api_user_input(request):
         score_change = results["score"]
         duration = results["timeout"]
         lockout = duration != 0
+        if output == "You have used a spell to escape!" or output == "You have safely escaped the maze!":
+            SIDE_HANDLER.add_exit(user_id)
         print("SCORE CHANGE: " + str(score_change))
 
         # Update the team score based on the returned delta
@@ -242,7 +244,13 @@ def api_submit_side_challenge(request):
                 "score": team.score,
             }
         else:
-            if correct == "Success":
+            if correct == "ERROR":
+                reply_data = {
+                    "correct": False,
+                    "message": "You have already exited the Maze",
+                    "score": team.score
+                }
+            elif correct == "Success":
                 # Update the team's score if the change is not zero
                 # Score stuff
                 team.score += score_change
@@ -277,9 +285,27 @@ def api_submit_side_challenge(request):
 def api_get_hint(request):
     user_id = request.session["user_id"]
     if request.is_ajax() and request.method == 'POST':
-        question_num = int(request.POST.get("question", "0"))
-        hint = SIDE_HANDLER.hint_handler(question=question_num, team=user_id)
-        return JsonResponse({"message": hint})
+        game_start_time = GameStart.objects.first().start_time.replace(tzinfo=None)
+        game_end_time = game_start_time + timedelta(minutes=GameStart.objects.first().event_duration)
+
+        if datetime.now() < game_start_time:
+            message = "The event has not started, event starts in %s." % \
+                      str(game_start_time - datetime.now()).split(".")[0]
+            reply_data = {
+                "message": message,
+            }
+        elif datetime.now() > game_end_time:
+            message = "The event has ended."
+            reply_data = {
+                "message": message,
+            }
+        else:
+            question_num = int(request.POST.get("question", "0"))
+            hint = SIDE_HANDLER.hint_handler(question=question_num, team=user_id)
+            reply_data = {
+                "message": hint
+            }
+        return JsonResponse(reply_data)
 
 
 def test_json_call(request):

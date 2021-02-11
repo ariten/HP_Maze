@@ -12,6 +12,7 @@ class SideHandler:
         self.question_2_hints = []
         self.question_3_hints = []
         self.question_4_hints = []
+        self.exited = []
         self.stats = {}
 
     def hint_handler(self, question, team):
@@ -30,6 +31,8 @@ class SideHandler:
         self.stats.update({team: 0})
 
     def handle(self, question, answer, team):
+        if team in self.exited:
+            return ("ERROR", "", 0)
         if question == 1:
             if team in self.question_1_teams:
                 return ("Success", '2p8934u5.JPG', 0)
@@ -71,19 +74,22 @@ class SideHandler:
     def add_stat(self, team):
         self.stats.update({team: self.stats[team] + 1})
 
+    def add_exit(self, team):
+        self.exited.append(team)
+
     def get_stats(self):
         return self.stats
 
     def question_1(self, answer):
-        actual_answer = 'rubeus hagrid'
+        actual_answer = 'sirius black'
         return answer.lower() == actual_answer
 
     def question_2(self, answer):
-        actual_answer = 'crookshanks'
+        actual_answer = 'errol'
         return answer.lower() == actual_answer
 
     def question_3(self, answer):
-        actual_answer = 'nymphadora'
+        actual_answer = 'mcgonagall'
         return answer.lower() == actual_answer
 
     def question_4(self, answer):
@@ -103,7 +109,7 @@ class SideHandler:
     def hint_question_3(self, team):
         if team not in self.question_3_hints:
             self.question_3_hints.append(team)
-        return "Think back to the first question, maybe try from a different elgna"
+        return "Think back to the first question, maybe try from a different angle to it"
 
     def hint_question_4(self, team):
         if team not in self.question_4_hints:

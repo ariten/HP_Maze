@@ -123,7 +123,7 @@ class Maze:
         # Pad the maze all around by this amount.
         padding = 10
         # Height and width of the maze image (excluding padding), in pixels
-        height = 1000
+        height = 2500
         width = int(height * aspect_ratio)
         # Scaling factors mapping maze coordinates to image coordinates
         scy, scx = height / self.ny, width / self.nx
@@ -220,7 +220,7 @@ class Maze:
             nv += 1
         self.cell_at(random.randint(self.nx%10, self.nx-1), random.randint(self.ny%10, self.ny-1)).change_state(2)
 
-        nr_qas = 10
+        nr_qas = 5
         question_and_answers = self.get_question_selection(nr_qas)
 
         for x in range(nr_qas):

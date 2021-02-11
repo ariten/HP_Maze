@@ -12,3 +12,4 @@ class GameStart(models.Model):
 
     start_time = models.DateTimeField()
     event_duration = models.IntegerField(default=15)
+
