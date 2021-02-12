@@ -38,11 +38,32 @@ def page_side_challenges(request):
     # Check to see if the user has selected a team yet, if not redirect to the selection page
     if "user_id" not in request.session:
         return redirect('team_selection')
-    
+
     user_id = request.session["user_id"]
     team = Team.objects.get(team_name=user_id)
-
-    return render(request, 'maze/side_challenges.html', {"user_id": user_id, "score": team.score})
+    game_start_time = GameStart.objects.first().start_time.replace(tzinfo=None)
+    game_end_time = game_start_time + timedelta(minutes=GameStart.objects.first().event_duration)
+    if datetime.now() < game_start_time or datetime.now() > game_end_time:
+        reply_data = {
+            "user_id": user_id,
+            "score": team.score,
+            "q1": "???",
+            "q2": "???",
+            "q3": "???",
+            "q4": "???",
+            "q4a": "???"
+        }
+    else:
+        reply_data = {
+            "user_id": user_id,
+            "score": team.score,
+            "q1": "fvevhf oynpx",
+            "q2": "01100101 01110010 01110010 01101111 01101100",
+            "q3": "yyntnabtpz",
+            "q4": "cuieyqgecfoy",
+            "q4a": "Now this one is a hard one, the key is located near one of the horcrux's",
+        }
+    return render(request, 'maze/side_challenges.html', reply_data)
 
 
 def page_admin_extras(request):

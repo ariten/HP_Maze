@@ -22,7 +22,7 @@
 <div class="row">
     <div class="col-md-8">
         {% comment %} Questions go here {% endcomment %}
-        <p class="scPrompt">Decrypt the string: <span class="scText">fvevhf oynpx</span></p>
+        <p class="scPrompt">Decrypt the string: <span class="scText">{{ q1 }}</span></p>
 
         <div class="input-group">
             <input type="text" class="form-control" id="userTextInputSC1" placeholder="Enter your answer here..." autocomplete="off" data-lpignore="true">
@@ -33,7 +33,7 @@
         <div id="scHint1" class="mb-4"></div>
 
 
-        <p class="scPrompt">Decrypt the string: <span class="scText">01100101 01110010 01110010 01101111 01101100</span></p>
+        <p class="scPrompt">Decrypt the string: <span class="scText">{{ q2 }}</span></p>
 
         <div class="input-group">
             <input type="text" class="form-control" id="userTextInputSC2" placeholder="Enter your answer here..." autocomplete="off" data-lpignore="true">
@@ -44,7 +44,7 @@
         <div id="scHint2" class="mb-4"></div>
 
 
-        <p class="scPrompt">Decrypt the string: <span class="scText">yyntnabtpz</span></p>
+        <p class="scPrompt">Decrypt the string: <span class="scText">{{ q3 }}</span></p>
 
         <div class="input-group">
             <input type="text" class="form-control" id="userTextInputSC3" placeholder="Enter your answer here..." autocomplete="off" data-lpignore="true">
@@ -54,7 +54,7 @@
         <div id="scResult3" class="mb-1"></div>
         <div id="scHint3" class="mb-4"></div>
 
-        <p class="scPrompt">Decrypt the string: <span class="scText">cuieyqgecfoy</span><br>Now this one is a hard one, the key is located near one of the horcrux's</p>
+        <p class="scPrompt">Decrypt the string: <span class="scText">{{ q4 }}</span><br>{{ q4a }}</p>
 
         <div class="input-group">
             <input type="text" class="form-control" id="userTextInputSC4" placeholder="Enter your answer here..." autocomplete="off" data-lpignore="true">
