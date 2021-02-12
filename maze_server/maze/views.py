@@ -166,7 +166,7 @@ def api_user_input(request):
             # Check to see if the user is leaving early, and block if time is too close to end of game
             if user_input.lower() == "periculum":
                 game_end_time = game_start_time + (timedelta(minutes=GameStart.objects.first().event_duration) -
-                                                   timedelta(minutes=1, seconds=30))
+                                                   timedelta(minutes=5))
                 if datetime.now() > game_end_time:
                     return JsonResponse({
                         "success": True,
