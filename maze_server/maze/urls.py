@@ -16,5 +16,6 @@ urlpatterns = [
     path('getgamestartinfo', views.api_get_game_start_info, name='get_game_start_info'),
     path('adminextras', views.page_admin_extras, name='admin_extras'),
     path('adminendgame', views.api_admin_end_game, name='admin_end_game'),
+    path('adminresetgame', views.api_admin_reset_game, name="admin_reset_game")
 ]
 

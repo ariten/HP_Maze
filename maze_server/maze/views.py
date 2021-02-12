@@ -108,6 +108,14 @@ def api_admin_end_game(request):
     else:
         return HttpResponse(status=401)
 
+def api_admin_reset_game(request):
+    if request.user.is_staff:
+        if request.is_ajax() and request.method == 'GET':
+            global MAZE_HANDLER
+            MAZE_HANDLER = MazeHandler(nx=10, ny=10, load_maze_file='Friday_maze.mz')
+            return JsonResponse({"success": True})
+    else:
+        return HttpResponse(status=401)
 
 def api_register_team(request):
     """Takes the user's input of team name and stores it in the session as the user's unique ID."""

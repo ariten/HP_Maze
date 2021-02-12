@@ -16,3 +16,19 @@ function endGame() {
         )
     }    
 }
+
+function reset() {
+    if (confirm("Are you sure you want to reset the game?")) {
+        $.getJSON(
+            '/adminresetgame',
+            function (data) {
+                if (data.success) {
+                    alert("Game reset successfully")
+                    location.reload()
+                } else {
+                    alert("Error! End game API endpoint failed.")
+                }
+            }
+        )
+    }
+}
